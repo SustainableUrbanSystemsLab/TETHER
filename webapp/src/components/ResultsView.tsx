@@ -321,7 +321,7 @@ export function ResultsView({
             <thead className="bg-gray-50">
               <tr>
                 <SortableHead
-                  label="Target #"
+                  label="Target row"
                   active={sortKey === "target_idx"}
                   desc={sortDesc}
                   onClick={() => toggleSort("target_idx")}

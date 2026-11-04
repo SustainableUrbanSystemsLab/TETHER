@@ -6,6 +6,12 @@ All notable changes to NeighborhoodMatcher. The format follows
 version (`python scripts/bump_version.py patch|minor|major`), and CI refuses a
 pull request that changes shipped code without one.
 
+## [0.10.1] - 2026-11-04
+
+### Changed
+
+- Row diagnostics: the first column is now headed **Target row** (was "Target #"), the same words the row's detail panel uses.
+
 ## [0.10.0] - 2026-10-09
 
 ### Added
