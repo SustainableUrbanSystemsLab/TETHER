@@ -293,7 +293,9 @@ export function ResultsView({
         </div>
         <p className="mt-3 text-xs text-gray-500">
           |SMD|: balanced &lt; {SMD_WARN} · poor ≥ {SMD_POOR}.{" "}
-          <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC3472075/" target="_blank" rel="noreferrer" className="text-blue-600 dark:text-blue-400 underline hover:text-blue-800">Reference</a>
+          <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC3472075/" target="_blank" rel="noreferrer" className="text-blue-600 dark:text-blue-400 underline hover:text-blue-800">
+            Austin, <em>Stat Med</em> 2009;28(25):3083–107
+          </a>
         </p>
       </details>
 
