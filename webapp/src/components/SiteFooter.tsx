@@ -17,6 +17,7 @@ import {
 } from "@/lib/about";
 import { useOfflineStatus } from "@/lib/runtime-cache";
 import { isDesktopApp } from "@/lib/platform";
+import { Tooltip } from "@/components/Tooltip";
 
 const FOOTER_LINK = "underline decoration-gray-300 underline-offset-2 hover:text-gray-700 dark:decoration-gray-600";
 
@@ -38,15 +39,11 @@ function AuthorCredit() {
           <span key={name}>
             {sep}
             {url ? (
-              <a
-                href={url}
-                target="_blank"
-                rel="noreferrer"
-                title={`${name}'s profile`}
-                className={FOOTER_LINK}
-              >
-                {name}
-              </a>
+              <Tooltip text={`${name}'s profile`}>
+                <a href={url} target="_blank" rel="noreferrer" className={FOOTER_LINK}>
+                  {name}
+                </a>
+              </Tooltip>
             ) : (
               name
             )}
@@ -86,8 +83,10 @@ function OfflineStatusLine() {
   switch (status.kind) {
     case "ready":
       return (
-        <p title="Every file the app needs is stored in this browser; it opens and runs without a connection.">
-          Available offline on this device.
+        <p>
+          <Tooltip text="Every file the app needs is stored in this browser; it opens and runs without a connection.">
+            <span tabIndex={0}>Available offline on this device.</span>
+          </Tooltip>
         </p>
       );
     case "installing":
@@ -96,13 +95,14 @@ function OfflineStatusLine() {
       return (
         <p>
           A newer version is available.{" "}
-          <button
-            onClick={status.apply}
-            className={`${FOOTER_LINK} text-blue-600 dark:text-blue-400`}
-            title="Reloads the page so the interface and the matching engine switch to the new version together."
-          >
-            Reload to update
-          </button>
+          <Tooltip text="Reloads the page so the interface and the matching engine switch to the new version together.">
+            <button
+              onClick={status.apply}
+              className={`${FOOTER_LINK} text-blue-600 dark:text-blue-400`}
+            >
+              Reload to update
+            </button>
+          </Tooltip>
         </p>
       );
     default:
@@ -115,17 +115,18 @@ export function SiteFooter({ className = "" }: { className?: string }) {
     <footer
       className={`mt-10 border-t border-gray-200 pt-4 text-center text-xs text-gray-500 ${className}`}
     >
-      <a
-        href={REPO_URL}
-        target="_blank"
-        rel="noreferrer"
-        title={`${TOOL_NAME} on GitHub — source code and issue tracker`}
-        aria-label={`${TOOL_NAME} on GitHub — source code and issue tracker`}
-        className="inline-flex items-center gap-1.5 text-gray-400 transition-colors hover:text-gray-700"
-      >
-        <GitHubMark />
-        <span className="sr-only">Source code and issue tracker</span>
-      </a>
+      <Tooltip text={`${TOOL_NAME} on GitHub — source code and issue tracker`}>
+        <a
+          href={REPO_URL}
+          target="_blank"
+          rel="noreferrer"
+          aria-label={`${TOOL_NAME} on GitHub — source code and issue tracker`}
+          className="inline-flex items-center gap-1.5 text-gray-400 transition-colors hover:text-gray-700"
+        >
+          <GitHubMark />
+          <span className="sr-only">Source code and issue tracker</span>
+        </a>
+      </Tooltip>
       <div className="mt-2 space-y-0.5 leading-relaxed">
         <p>
           <span className="font-medium text-gray-600">{TOOL_NAME}</span>{" "}

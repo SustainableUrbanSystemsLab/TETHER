@@ -1,4 +1,5 @@
 import { AcronymTooltip } from "@/components/AcronymTooltip";
+import { Tooltip } from "@/components/Tooltip";
 import { Fragment, useMemo, useState } from "react";
 import { buildResultsZip, triggerDownload } from "@/lib/zip-builder";
 import { tierChipClasses, tierRank, tierSentence } from "@/lib/confidence-text";
@@ -341,11 +342,12 @@ export function ResultsView({
                   onClick={() => toggleSort("features_used")}
                   help="How many of the linked matching variables were observed on both sides of this pair and therefore informed the match. Fewer than the total means the missing-data penalty contributed to the distance."
                 />
-                <th
-                  className="cursor-help px-3 py-2 text-left text-xs font-medium uppercase tracking-wider text-gray-500 underline decoration-dotted underline-offset-2"
-                  title="Mutual nearest neighbor. ✓ = the pairing holds in both directions: the matched supplemental row is not closer to any other target row. ✗ = one-sided — the supplemental row fits a different target even better, so this match may not be a real correspondence."
-                >
-                  MNN
+                <th className="px-3 py-2 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                  <Tooltip text="Mutual nearest neighbor. ✓ = the pairing holds in both directions: the matched supplemental row is not closer to any other target row. ✗ = one-sided — the supplemental row fits a different target even better, so this match may not be a real correspondence.">
+                    <span tabIndex={0} className="cursor-help underline decoration-dotted underline-offset-2">
+                      MNN
+                    </span>
+                  </Tooltip>
                 </th>
                 <th className="px-3 py-2 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
                   Tied at min
@@ -417,24 +419,31 @@ export function ResultsView({
                         {row.repeats > 1 ? `${row.repeats} rows` : "—"}
                       </td>
                       <td className="px-3 py-1.5 text-xs">
-                        <span
-                          className={`inline-block rounded-full border px-2 py-0.5 text-[11px] font-medium ${tierChipClasses(row.confidence)}`}
-                          title={
-                            row.withheld
-                              ? "Link withheld below your minimum confidence — reported unlinked; diagnostics kept."
-                              : undefined
-                          }
-                        >
-                          {row.confidence}
-                          {row.withheld ? " · withheld" : ""}
-                        </span>
+                        {row.withheld ? (
+                          <Tooltip text="Link withheld below your minimum confidence — reported unlinked; diagnostics kept.">
+                            <span
+                              tabIndex={0}
+                              className={`inline-block rounded-full border px-2 py-0.5 text-[11px] font-medium ${tierChipClasses(row.confidence)}`}
+                            >
+                              {row.confidence} · withheld
+                            </span>
+                          </Tooltip>
+                        ) : (
+                          <span
+                            className={`inline-block rounded-full border px-2 py-0.5 text-[11px] font-medium ${tierChipClasses(row.confidence)}`}
+                          >
+                            {row.confidence}
+                          </span>
+                        )}
                       </td>
                       <td className="px-3 py-1.5 text-xs text-amber-800">
                         {row.flags ? (
-                          <span title={row.flags}>
-                            {row.flags.split(" | ").length} flag
-                            {row.flags.split(" | ").length > 1 ? "s" : ""}
-                          </span>
+                          <Tooltip text={row.flags}>
+                            <span tabIndex={0}>
+                              {row.flags.split(" | ").length} flag
+                              {row.flags.split(" | ").length > 1 ? "s" : ""}
+                            </span>
+                          </Tooltip>
                         ) : (
                           <span className="text-green-700">ok</span>
                         )}
@@ -527,9 +536,7 @@ export function ResultsView({
             <span className="text-xs text-red-600">{downloadError}</span>
           )}
           {savedPath && (
-            <span className="text-xs text-green-700" title={savedPath}>
-              Saved to {savedPath}
-            </span>
+            <span className="text-xs text-green-700">Saved to {savedPath}</span>
           )}
         </div>
       </div>
@@ -548,12 +555,16 @@ export function ResultsView({
           >
             {output.provenance?.tool ?? TOOL_NAME}
           </a>{" "}
-          <span title={`Matching engine version · webapp ${buildLabel()}`}>
-            v{output.provenance?.version ?? "unknown"} · webapp {buildLabel()}
-          </span>
+          <Tooltip text={`Matching engine version · webapp ${buildLabel()}`}>
+            <span tabIndex={0}>
+              v{output.provenance?.version ?? "unknown"} · webapp {buildLabel()}
+            </span>
+          </Tooltip>
         </p>
-        <p title={utcTimestamp(completedAt)}>
-          Generated {localTimestamp(completedAt)}
+        <p>
+          <Tooltip text={utcTimestamp(completedAt)}>
+            <span tabIndex={0}>Generated {localTimestamp(completedAt)}</span>
+          </Tooltip>
         </p>
       </details>
     </div>
@@ -627,11 +638,17 @@ function SummaryCard({
     red: "text-red-700",
     gray: "text-gray-600",
   }[tone];
+  const labelEl = (
+    <span
+      tabIndex={help ? 0 : undefined}
+      className={`block text-xs ${sub}${help ? " cursor-help underline decoration-dotted underline-offset-2" : ""}`}
+    >
+      {label}
+    </span>
+  );
   return (
-    <div className={`rounded-lg p-3 ${bg}`} title={help}>
-      <p className={`text-xs ${sub}${help ? " cursor-help underline decoration-dotted underline-offset-2" : ""}`}>
-        {label}
-      </p>
+    <div className={`rounded-lg p-3 ${bg}`}>
+      {help ? <Tooltip text={help}>{labelEl}</Tooltip> : labelEl}
       <p className="text-xl font-bold">{value}</p>
     </div>
   );
@@ -650,16 +667,20 @@ function SortableHead({
   onClick: () => void;
   help?: string;
 }) {
+  const content = (
+    <>
+      {label}
+      {active && <span className="ml-1">{desc ? "▼" : "▲"}</span>}
+    </>
+  );
   return (
     <th
       onClick={onClick}
-      title={help}
       className={`cursor-pointer px-3 py-2 text-left text-xs font-medium uppercase tracking-wider text-gray-500 hover:text-gray-800 ${
         help ? "underline decoration-dotted underline-offset-2" : ""
       }`}
     >
-      {label}
-      {active && <span className="ml-1">{desc ? "▼" : "▲"}</span>}
+      {help ? <Tooltip text={help}>{content}</Tooltip> : content}
     </th>
   );
 }
@@ -671,9 +692,11 @@ function SmdRow({ name, value }: { name: string; value: number }) {
     abs >= SMD_POOR ? "bg-red-500" : abs >= SMD_WARN ? "bg-amber-500" : "bg-green-500";
   return (
     <div className="flex items-center gap-2 text-xs">
-      <span className="w-40 truncate text-gray-700" title={name}>
-        {name}
-      </span>
+      <Tooltip text={name}>
+        <span tabIndex={0} className="block w-40 truncate text-gray-700">
+          {name}
+        </span>
+      </Tooltip>
       <div className="relative h-4 flex-1 overflow-hidden rounded bg-gray-100">
         <div
           className={`h-full ${color}`}
@@ -919,12 +942,11 @@ function DrilldownPanel({
           <p className="mt-0.5 text-xs text-gray-500">
             Distance {detail.best_distance != null ? detail.best_distance.toFixed(4) : "—"} · NNDR{" "}
             {detail.nndr != null ? detail.nndr.toFixed(3) : "—"} ·{" "}
-            <span
-              className="cursor-help underline decoration-dotted underline-offset-2"
-              title="Mutual nearest neighbor: confirmed means the pairing holds in both directions — the matched supplemental row is not closer to any other target row. Not confirmed means the pairing is one-sided and may not be a real correspondence."
-            >
-              MNN {detail.mnn_confirmed ? "✓ confirmed" : "✗ not confirmed"}
-            </span>{" "}
+            <Tooltip text="Mutual nearest neighbor: confirmed means the pairing holds in both directions — the matched supplemental row is not closer to any other target row. Not confirmed means the pairing is one-sided and may not be a real correspondence.">
+              <span tabIndex={0} className="cursor-help underline decoration-dotted underline-offset-2">
+                MNN {detail.mnn_confirmed ? "✓ confirmed" : "✗ not confirmed"}
+              </span>
+            </Tooltip>{" "}
             ·{" "}
             tied at min {detail.repeats > 1 ? `${detail.repeats} rows` : "none"} ·
             near-miss {detail.near_miss} ·
@@ -979,9 +1001,11 @@ function DrilldownPanel({
               const pct = c * 100;
               return (
                 <div key={f} className="flex items-center gap-2 text-xs">
-                  <span className="w-32 truncate text-gray-700" title={f}>
-                    {f}
-                  </span>
+                  <Tooltip text={f}>
+                    <span tabIndex={0} className="block w-32 truncate text-gray-700">
+                      {f}
+                    </span>
+                  </Tooltip>
                   <div className="relative h-4 flex-1 overflow-hidden rounded bg-gray-100">
                     <div
                       className="h-full bg-blue-500"

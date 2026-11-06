@@ -10,6 +10,7 @@
 
 import type { ThemeControl } from "@/lib/use-theme";
 import type { ThemePreference } from "@/lib/theme";
+import { Tooltip } from "@/components/Tooltip";
 
 const NEXT: Record<ThemePreference, ThemePreference> = {
   system: "light",
@@ -67,14 +68,15 @@ export function ThemeToggle({ theme }: { theme: ThemeControl }) {
       : LABEL[theme.preference];
 
   return (
-    <button
-      type="button"
-      onClick={() => theme.setPreference(next)}
-      title={`Theme: ${state} — switch to ${LABEL[next]}`}
-      aria-label={`Theme: ${state}. Switch to ${LABEL[next]}.`}
-      className="rounded-md p-1.5 text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-700"
-    >
-      <Icon preference={theme.preference} />
-    </button>
+    <Tooltip text={`Theme: ${state} — switch to ${LABEL[next]}`}>
+      <button
+        type="button"
+        onClick={() => theme.setPreference(next)}
+        aria-label={`Theme: ${state}. Switch to ${LABEL[next]}.`}
+        className="rounded-md p-1.5 text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-700"
+      >
+        <Icon preference={theme.preference} />
+      </button>
+    </Tooltip>
   );
 }

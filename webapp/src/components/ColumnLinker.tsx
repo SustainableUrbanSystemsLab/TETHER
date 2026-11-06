@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import { columnMissingStats, type ColumnMissingStats } from "@/lib/missing";
 import { blockedSentence, type IdentifierVerdict } from "@/lib/identifier-guard";
 import { DataPreviewModal } from "@/components/DataPreviewModal";
+import { Tooltip } from "@/components/Tooltip";
 import type { ColumnLink, ParsedDataset, PIIWarning } from "@/types";
 
 function MissingBadge({
@@ -20,13 +21,14 @@ function MissingBadge({
         ? "bg-amber-100 text-amber-700"
         : "bg-gray-100 text-gray-500";
   return (
-    <button
-      onClick={onClick}
-      className={`rounded px-1.5 py-0.5 text-[11px] underline-offset-2 hover:underline ${cls}`}
-      title="Missing cells never match on this variable; the distance uses the missing-data penalty for them instead. Click to see which rows."
-    >
-      {stats.missing} missing ({pct.toFixed(0)}%)
-    </button>
+    <Tooltip text="Missing cells never match on this variable; the distance uses the missing-data penalty for them instead. Click to see which rows.">
+      <button
+        onClick={onClick}
+        className={`rounded px-1.5 py-0.5 text-[11px] underline-offset-2 hover:underline ${cls}`}
+      >
+        {stats.missing} missing ({pct.toFixed(0)}%)
+      </button>
+    </Tooltip>
   );
 }
 
@@ -245,12 +247,14 @@ export function ColumnLinker({
                     {link.headerName}
                   </span>
                   {warning && (
-                    <span
-                      className="rounded bg-amber-100 px-1.5 py-0.5 text-xs text-amber-700"
-                      title={warning.reason}
-                    >
-                      PII
-                    </span>
+                    <Tooltip text={warning.reason}>
+                      <span
+                        tabIndex={0}
+                        className="rounded bg-amber-100 px-1.5 py-0.5 text-xs text-amber-700"
+                      >
+                        PII
+                      </span>
+                    </Tooltip>
                   )}
                   {targetStats[link.targetIndex] && (
                     <MissingBadge
@@ -277,12 +281,11 @@ export function ColumnLinker({
                 </div>
                 <div className="col-span-2 text-center">
                   {link.blocked ? (
-                    <span
-                      className="text-xs font-medium text-red-600"
-                      title={blockedSentence(link.blocked)}
-                    >
-                      Blocked — identifier
-                    </span>
+                    <Tooltip text={blockedSentence(link.blocked)}>
+                      <span tabIndex={0} className="text-xs font-medium text-red-600">
+                        Blocked — identifier
+                      </span>
+                    </Tooltip>
                   ) : link.excluded ? (
                     <span className="text-xs text-amber-500">Excluded</span>
                   ) : (

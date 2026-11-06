@@ -13,6 +13,7 @@ import {
 } from "@/lib/run-history";
 import { localTimestamp } from "@/lib/about";
 import { restoreFromZip, type RestoredRun } from "@/lib/restore";
+import { Tooltip } from "@/components/Tooltip";
 
 function pct(n: number, of: number): string {
   return of ? `${((n / of) * 100).toFixed(0)}%` : "—";
@@ -63,14 +64,15 @@ function RunRow({
           </p>
         )}
       </div>
-      <button
-        onClick={() => onDelete(run.id)}
-        title="Forget this run"
-        aria-label={`Forget the run of ${run.targetFile} from ${localTimestamp(new Date(run.finishedAt))}`}
-        className="shrink-0 rounded px-1.5 py-0.5 text-xs text-gray-400 hover:bg-gray-100 hover:text-gray-700"
-      >
-        ✕
-      </button>
+      <Tooltip text="Forget this run">
+        <button
+          onClick={() => onDelete(run.id)}
+          aria-label={`Forget the run of ${run.targetFile} from ${localTimestamp(new Date(run.finishedAt))}`}
+          className="shrink-0 rounded px-1.5 py-0.5 text-xs text-gray-400 hover:bg-gray-100 hover:text-gray-700"
+        >
+          ✕
+        </button>
+      </Tooltip>
     </li>
   );
 }

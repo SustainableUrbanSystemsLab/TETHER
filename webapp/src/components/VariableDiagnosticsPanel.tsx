@@ -19,6 +19,7 @@ import {
   verdictLabel,
 } from "@/lib/variable-text";
 import { DataPreviewModal } from "@/components/DataPreviewModal";
+import { Tooltip } from "@/components/Tooltip";
 
 interface VariableDiagnosticsPanelProps {
   variables: VariableReportRow[];
@@ -67,12 +68,14 @@ function AblationCell({
 }) {
   return (
     <div className="space-y-1">
-      <span
-        className={`inline-block rounded border px-1.5 py-0.5 text-[11px] font-medium ${verdictChipClasses(variable.verdict)}`}
-        title={removalSentence(variable)}
-      >
-        {verdictLabel(variable.verdict)}
-      </span>
+      <Tooltip text={removalSentence(variable)}>
+        <span
+          tabIndex={0}
+          className={`inline-block rounded border px-1.5 py-0.5 text-[11px] font-medium ${verdictChipClasses(variable.verdict)}`}
+        >
+          {verdictLabel(variable.verdict)}
+        </span>
+      </Tooltip>
       <div className="text-[11px] text-gray-500">
         {variable.delta_mnn_pct >= 0 ? "+" : ""}
         {variable.delta_mnn_pct.toFixed(1)} pts MNN ·{" "}
@@ -80,13 +83,14 @@ function AblationCell({
         {variable.delta_high_pct.toFixed(1)} pts High
       </div>
       {variable.verdict === "consider_excluding" && (
-        <button
-          onClick={() => onExclude(variable.feature)}
-          className="rounded border border-red-300 bg-red-50 px-2 py-0.5 text-[11px] font-medium text-red-700 hover:bg-red-100"
-          title="Exclude this variable at the Link step and adjust the run"
-        >
-          Exclude and adjust →
-        </button>
+        <Tooltip text="Exclude this variable at the Link step and adjust the run">
+          <button
+            onClick={() => onExclude(variable.feature)}
+            className="rounded border border-red-300 bg-red-50 px-2 py-0.5 text-[11px] font-medium text-red-700 hover:bg-red-100"
+          >
+            Exclude and adjust →
+          </button>
+        </Tooltip>
       )}
     </div>
   );
@@ -158,29 +162,25 @@ export function VariableDiagnosticsPanel({
           <thead>
             <tr className="border-b border-gray-200 text-left text-gray-500">
               <th className="py-1.5 pr-3 font-medium">Variable</th>
-              <th
-                className="py-1.5 pr-3 font-medium"
-                title="Missing cells in the target / supplemental file. Missing values never match — each charges a fixed distance penalty instead."
-              >
-                Missing (t / s)
+              <th className="py-1.5 pr-3 font-medium">
+                <Tooltip text="Missing cells in the target / supplemental file. Missing values never match — each charges a fixed distance penalty instead.">
+                  <span tabIndex={0}>Missing (t / s)</span>
+                </Tooltip>
               </th>
-              <th
-                className="py-1.5 pr-3 font-medium"
-                title="How far the two files' means sit apart, in pooled standard deviations, before matching. High values suggest the column is defined or coded differently in the two files (e.g. poverty at 100% vs 180% of the poverty line)."
-              >
-                Offset SMD
+              <th className="py-1.5 pr-3 font-medium">
+                <Tooltip text="How far the two files' means sit apart, in pooled standard deviations, before matching. High values suggest the column is defined or coded differently in the two files (e.g. poverty at 100% vs 180% of the poverty line).">
+                  <span tabIndex={0}>Offset SMD</span>
+                </Tooltip>
               </th>
-              <th
-                className="py-1.5 pr-3 font-medium"
-                title="Share of the run's total match distance driven by this variable."
-              >
-                Distance share
+              <th className="py-1.5 pr-3 font-medium">
+                <Tooltip text="Share of the run's total match distance driven by this variable.">
+                  <span tabIndex={0}>Distance share</span>
+                </Tooltip>
               </th>
-              <th
-                className="py-1.5 pr-3 font-medium"
-                title="What happens to run quality when matching is re-run WITHOUT this variable."
-              >
-                Effect of removal
+              <th className="py-1.5 pr-3 font-medium">
+                <Tooltip text="What happens to run quality when matching is re-run WITHOUT this variable.">
+                  <span tabIndex={0}>Effect of removal</span>
+                </Tooltip>
               </th>
               <th className="py-1.5 font-medium">Notes</th>
             </tr>
@@ -229,9 +229,11 @@ export function VariableDiagnosticsPanel({
                         checking… {Math.round(ablation.progress * 100)}%
                       </span>
                     ) : ablation.status === "error" ? (
-                      <span className="text-red-600" title={ablation.message}>
-                        check failed
-                      </span>
+                      <Tooltip text={ablation.message}>
+                        <span tabIndex={0} className="text-red-600">
+                          check failed
+                        </span>
+                      </Tooltip>
                     ) : ablation.status === "gated" ? (
                       <span className="text-gray-400">on demand ↑</span>
                     ) : ablation.status === "unavailable" ? (
