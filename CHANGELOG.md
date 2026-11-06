@@ -6,6 +6,12 @@ All notable changes to TETHER. The format follows
 version (`python scripts/bump_version.py patch|minor|major`), and CI refuses a
 pull request that changes shipped code without one.
 
+## [1.0.3] - 2026-11-06
+
+### Fixed
+
+- `Tooltip` now auto-flips when its preferred side would render off-screen (top -> bottom when too close to the top edge, right -> left when too close to the right edge), instead of only the TETHER logo getting an explicit `placement="right"` override. Fixes the theme toggle's tooltip, which sits in the top corner on every page (Home, Match, About) and was opening above the viewport.
+
 ## [1.0.2] - 2026-11-06
 
 ### Fixed
