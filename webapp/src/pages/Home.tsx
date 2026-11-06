@@ -22,7 +22,7 @@ export default function Home() {
           TETHER
         </h1>
         <p className="mb-8 text-lg text-gray-500">
-          Match and merge two CSV datasets using statistical similarity
+          Tying Environmental context To Human records, Ensuring Residential privacy
         </p>
 
         <div className="mb-8 space-y-3 text-left">
