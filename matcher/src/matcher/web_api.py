@@ -31,6 +31,8 @@ from .identifiers import (
     IdentifierColumnError,
     blocked_links,
     blocked_warning,
+    identify_columns,
+    output_identifier_warning,
     without_blocked,
 )
 from .standardize import dual_standardize, scale_compatibility_warnings
@@ -143,12 +145,37 @@ def _prepare(target_csv, supplemental_csv, links, exclude):
     h1, rs1, lines1 = _parse_csv_string(target_csv, "target file")
     h2, rs2, lines2 = _parse_csv_string(supplemental_csv, "supplemental file")
 
+    # Geographic identifiers (ZIP, tract, GEOID, ...) are removed from the
+    # linked output entirely — shared matching candidate or not, this is a
+    # per-file scan, not limited to `common` below. See identifiers.py.
+    target_identifiers = identify_columns(h1, rs1)
+    supp_identifiers = identify_columns(h2, rs2)
+    target_strip = {c["index"] for c in target_identifiers}
+    supp_strip = {c["index"] for c in supp_identifiers}
+    # row_merge drops target_strip columns, so a target column's position in
+    # the merged row is no longer its own header1Index once anything before
+    # it was stripped — remapped for the fill-from-match step below (never a
+    # stripped index itself: common excludes every identifier column).
+    target_index_map = {
+        orig: new for new, orig in enumerate(
+            i for i in range(len(h1)) if i not in target_strip
+        )
+    }
+
     identifier_notes = []
     if links is None:
         common = find_common_headers(h1, h2, exclude)
         blocked = blocked_links(common, h1, h2, rs1, rs2)
-        identifier_notes = [blocked_warning(b) for b in blocked]
         common = without_blocked(common, blocked)
+        blocked_h1 = {b["header1Index"] for b in blocked if b["side"] in ("target", "both")}
+        blocked_h2 = {b["header2Index"] for b in blocked if b["side"] in ("supplemental", "both")}
+        identifier_notes = (
+            [blocked_warning(b) for b in blocked]
+            + [output_identifier_warning(c, "target") for c in target_identifiers
+               if c["index"] not in blocked_h1]
+            + [output_identifier_warning(c, "supplemental") for c in supp_identifiers
+               if c["index"] not in blocked_h2]
+        )
     else:
         _validate_links(list(links), len(h1), len(h2))
         # Normalize dict-like entries coming from JS.
@@ -163,6 +190,10 @@ def _prepare(target_csv, supplemental_csv, links, exclude):
         blocked = blocked_links(common, h1, h2, rs1, rs2)
         if blocked:
             raise IdentifierColumnError(blocked)
+        identifier_notes = (
+            [output_identifier_warning(c, "target") for c in target_identifiers]
+            + [output_identifier_warning(c, "supplemental") for c in supp_identifiers]
+        )
     feature_names = [c["headerName"] for c in common]
 
     if not common:
@@ -202,6 +233,11 @@ def _prepare(target_csv, supplemental_csv, links, exclude):
         # Parsed per-feature values (None = missing) — the emit loop needs
         # them to decide which target cells to fill from the matched row.
         "filtered_rs1": filtered_rs1, "filtered_rs2": filtered_rs2,
+        # Geographic-identifier columns stripped from the linked output —
+        # see row_merge / new_header in _assemble_prepared below.
+        "target_identifiers": target_identifiers, "supp_identifiers": supp_identifiers,
+        "target_strip": target_strip, "supp_strip": supp_strip,
+        "target_index_map": target_index_map,
     }
 
 
@@ -345,6 +381,8 @@ def _assemble_prepared(prep, shards, threshold, max_distance=None, min_confidenc
     warnings = prep["warnings"]
     std_rows_1, std_rows_2 = prep["std_rows_1"], prep["std_rows_2"]
     filtered_rs1, filtered_rs2 = prep["filtered_rs1"], prep["filtered_rs2"]
+    target_strip, supp_strip = prep["target_strip"], prep["supp_strip"]
+    target_index_map = prep["target_index_map"]
 
     n_target = len(std_rows_1)
     m = len(std_rows_2)
@@ -470,7 +508,7 @@ def _assemble_prepared(prep, shards, threshold, max_distance=None, min_confidenc
         v["distance_share"] = float(s)
 
     linked_headers = (
-        new_header(h1, h2, common)
+        new_header(h1, h2, common, target_strip, supp_strip)
         + ["euc_distance", "repeats", "nndr", "near_miss_count", "mnn_confirmed",
            "features_used", "exact_on_observed", "filled_from_match",
            "confidence", "flags"]
@@ -504,7 +542,7 @@ def _assemble_prepared(prep, shards, threshold, max_distance=None, min_confidenc
             )
             tier = "No match"
             linked_rows.append(
-                row_merge(rs1[i], blank_supp_row, common)
+                row_merge(rs1[i], blank_supp_row, common, target_strip, supp_strip)
                 + ["", 0, "", 0, 0, 0, "", "", tier, flags]
             )
             detail_rows.append(
@@ -570,7 +608,7 @@ def _assemble_prepared(prep, shards, threshold, max_distance=None, min_confidenc
             )
             tier = "No match"
             linked_rows.append(
-                row_merge(rs1[i], blank_supp_row, common)
+                row_merge(rs1[i], blank_supp_row, common, target_strip, supp_strip)
                 + ["", 0, "", 0, 0, 0, "", "", tier, flags]
             )
             detail_rows.append(
@@ -631,7 +669,7 @@ def _assemble_prepared(prep, shards, threshold, max_distance=None, min_confidenc
             # run-level statistic below is incremented exactly as it would
             # be with the filter off.
             linked_rows.append(
-                row_merge(rs1[i], blank_supp_row, common)
+                row_merge(rs1[i], blank_supp_row, common, target_strip, supp_strip)
                 + ["", 0, "", 0, 0, 0, "", "", f"{tier} (withheld)", flags]
             )
             detail_rows.append(
@@ -677,11 +715,11 @@ def _assemble_prepared(prep, shards, threshold, max_distance=None, min_confidenc
         # Fill missing target cells in shared columns from the matched row
         # (raw value verbatim) and record which columns were filled. This is
         # output completion only — matching itself never imputes.
-        merged = row_merge(rs1[i], rs2[j], common)
+        merged = row_merge(rs1[i], rs2[j], common, target_strip, supp_strip)
         filled = []
         for k, c in enumerate(common):
             if filtered_rs1[i][k] is None and filtered_rs2[j][k] is not None:
-                merged[c["header1Index"]] = rs2[j][c["header2Index"]]
+                merged[target_index_map[c["header1Index"]]] = rs2[j][c["header2Index"]]
                 filled.append(c["headerName"])
 
         linked_rows.append(

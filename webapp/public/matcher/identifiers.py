@@ -21,9 +21,12 @@ either test:
   integers are NOT a shape: median_income is ≥ 90 % five-digit and must
   stay usable.
 
-There is deliberately no override. Blocked columns are not removed from the
-files: like every other non-matching column they pass through to the output
-unchanged, and the warning / error text says so.
+There is deliberately no override. A column judged an identifier — whether
+or not it was ever a matching candidate (shared with the other file) — is
+removed from the linked output entirely; see `identify_columns` below and
+`merge.row_merge` / `merge.new_header`, which apply the strip. It stays in
+the ORIGINAL file (this guard never edits an input), and the warning /
+error text says so.
 
 The webapp mirrors this module in webapp/src/lib/identifier-guard.ts;
 tests/test_identifiers.py pins the two pattern lists to each other, so the
@@ -168,6 +171,52 @@ def _judge(header, rows, index):
     return None
 
 
+def identify_columns(headers, rows):
+    """
+    (index, column, kind, reason) for every column of ONE file that is a
+    geographic identifier, by name or by value shape — whether or not it is
+    shared with the other file. Every column returned here is removed from
+    the linked output entirely (see `merge.row_merge` / `merge.new_header`);
+    there is no override, matching candidate or not.
+    """
+    out = []
+    for i, header in enumerate(headers):
+        verdict = _judge(header, rows, i)
+        if verdict:
+            kind, reason = verdict
+            out.append({"index": i, "column": header, "kind": kind, "reason": reason})
+    return out
+
+
+def output_identifier_warning(entry, side):
+    """
+    One warning for a column removed from the output that was NEVER a
+    matching candidate (not shared with the other file under the same
+    name) — a column that WAS a candidate gets `blocked_warning` instead,
+    which explains the matching exclusion too.
+    """
+    return (
+        f"removed '{entry['column']}' ({side} file) from the output: "
+        f"{entry['reason']} — geographic identifiers (HIPAA / PII) are "
+        "never included in the output; if it is not an identifier, rename "
+        "it (name match) or rescale it (value match)"
+    )
+
+
+def output_identifier_summary(target_cols, supp_cols):
+    """
+    run_info value, same style as blocked_summary: 'tract_geoid
+    (supplemental): 10- or 11-digit census tract GEOIDs (by its values); …',
+    or 'none'.
+    """
+    parts = [
+        f"{c['column']} ({side}): {c['reason']}"
+        for side, cols in (("target", target_cols), ("supplemental", supp_cols))
+        for c in cols
+    ]
+    return "; ".join(parts) if parts else "none"
+
+
 def blocked_links(common, headers1, headers2, rows1, rows2):
     """
     The links in `common` that touch an identifier column on either side.
@@ -214,8 +263,8 @@ def blocked_warning(entry):
     return (
         f"excluded '{entry['column']}'{where} from matching: {entry['reason']} — "
         "geographic identifiers (HIPAA / PII) can never be matching variables. "
-        "The column still passes through to the output unchanged; if it is not "
-        "an identifier, rename it (name match) or rescale it (value match)"
+        "The column is removed from the output entirely; if it is not an "
+        "identifier, rename it (name match) or rescale it (value match)"
     )
 
 
@@ -244,6 +293,7 @@ class IdentifierColumnError(ValueError):
         super().__init__(
             f"Cannot match on {noun} " + "; ".join(parts) + ". ZIP codes, census "
             "tracts and other geographic identifiers are never used for matching "
-            "(HIPAA / PII). Remove the link — the column can stay in the file and "
-            "passes through to the output unchanged."
+            "(HIPAA / PII) and are removed from the output entirely. Remove the "
+            "link — the column can stay in the original file, just not the "
+            "linked output."
         )

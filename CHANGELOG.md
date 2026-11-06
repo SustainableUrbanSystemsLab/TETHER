@@ -6,6 +6,23 @@ All notable changes to TETHER. The format follows
 version (`python scripts/bump_version.py patch|minor|major`), and CI refuses a
 pull request that changes shipped code without one.
 
+## [1.0.0] - 2026-11-06
+
+### Changed
+
+- **Rebrand as TETHER** (was NeighborhoodMatcher).
+- **Geographic-identifier columns are now removed from the linked output entirely** — not just excluded from matching. Previously a blocked column (e.g. a shared `census tract`) still passed through unchanged into the downloaded `linked_dataset.csv`; worse, a column that was never shared between the two files (e.g. a `tract_geoid` column present only in the supplemental file) was never even examined by the guard, since it only scanned shared/linked columns. The guard now scans every column of both files independently (`identifiers.identify_columns`) and strips every match from the output, matched on or not. `run_info.csv` gains `identifier_columns_removed_from_output` alongside the existing `identifier_columns_blocked`. The original files are never touched — only the linked output drops the column. Covered by new Python tests (a solo, never-shared identifier column) and the existing `offline.spec.ts` / desktop self-test, both flipped to assert the column's absence.
+- Tooltips: a shared, instant hover popup (`Tooltip.tsx`, rendered through a portal so it isn't clipped inside the scrolling results table) replaces every native `title="..."` attribute app-wide — column headers, missing-data badges, identifier/PII reasons, truncated names, summary-card help, the footer, the theme toggle. `AcronymTooltip` (NNDR/MNN/SMD) now builds on it.
+
+### Added
+
+- **Spreadsheet preview for missing cells.** Clicking a "N missing (X%)" badge (Link step, or Results → Variable check) opens a paginated row/column grid of that input file with missing cells highlighted, and a filter for "only missing rows" (`DataPreviewModal.tsx`).
+- The two upload boxes are tinted (Target blue, Supplemental purple) so they read apart before either file is chosen.
+
+### Fixed
+
+- A copy trim renamed the results page's "Rows matched" label to "Rows processed" without updating four Playwright specs still waiting on the old string — each burned a 150-second timeout before failing, which is why `Tests / webapp` ran 40+ minutes on a few pushes to `main`.
+
 ## [0.10.1] - 2026-11-04
 
 ### Changed

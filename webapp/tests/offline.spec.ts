@@ -71,18 +71,18 @@ test("keeps working with the network off after one visit", async ({ page, contex
   await uploadAndLink(page, TARGET, SUPP);
   await runMatch(page);
   await page.goto("/about");
-  await expect(page.getByText("Use it without Internet")).toBeVisible();
+  await expect(page.getByText("Offline options")).toBeVisible();
   await context.setOffline(false);
 });
 
 test("the home page's offline link lands on the offline section", async ({ page }) => {
   await page.goto("/");
-  await page.getByRole("link", { name: "Use it without Internet" }).click();
+  await page.getByRole("link", { name: "Offline options" }).click();
   await expect(page).toHaveURL(/\/about#offline$/);
-  await expect(page.getByRole("heading", { name: "Use it without Internet" })).toBeInViewport();
+  await expect(page.getByRole("heading", { name: "Offline options" })).toBeInViewport();
   // A direct visit to the fragment too.
   await page.goto("/about#offline");
-  await expect(page.getByRole("heading", { name: "Use it without Internet" })).toBeInViewport();
+  await expect(page.getByRole("heading", { name: "Offline options" })).toBeInViewport();
 });
 
 test("ZIP / census-tract columns are blocked from matching and recorded", async ({ page }) => {
@@ -106,7 +106,7 @@ test("ZIP / census-tract columns are blocked from matching and recorded", async 
   await expect(page.getByText("1 blocked (identifier)")).toBeVisible();
   await expect(page.getByRole("button", { name: "Run Matching" })).toBeEnabled();
   await runMatch(page);
-  await expect(page.getByText("Not used for matching:")).toBeVisible();
+  await expect(page.getByText("Removed from the output:")).toBeVisible();
 
   const [download] = await Promise.all([
     page.waitForEvent("download"),
@@ -117,5 +117,5 @@ test("ZIP / census-tract columns are blocked from matching and recorded", async 
   expect(info).toMatch(/identifier_columns_blocked,.*census tract: census tract identifiers \(by column name\)/);
   expect(info).toMatch(/matching_variables,"?pct_poverty; median_income"?/);
   const linked = await zip.file("linked_dataset.csv")!.async("string");
-  expect(linked.split("\n")[0]).toContain("census tract");
+  expect(linked.split("\n")[0]).not.toContain("census tract");
 });

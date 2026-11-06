@@ -37,7 +37,8 @@ spatial indexes), and all matching runs client-side in your browser — data
 never leaves your machine, even on the hosted site. **ZIP codes, census tract
 IDs and other geographic identifiers are never matching variables**: columns
 named or shaped like them are blocked, with no override, in the web app and
-the Python engine alike (they still pass through to the output).
+the Python engine alike — and removed from the linked output entirely,
+matched on or not; they stay in your original file.
 
 **No Internet needed.** The site serves its own Python runtime and keeps
 working offline after one visit; a [desktop app](#use-it-without-internet)

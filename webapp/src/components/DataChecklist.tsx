@@ -219,8 +219,8 @@ const ITEMS: Item[] = [
   },
   {
     Icon: PictoNoIdentifier,
-    title: "Exclude geographic identifiers.",
-    detail: "ZIP codes, census tracts, GEOIDs, coordinates, and addresses are blocked from matching, with no override. These columns still pass through to your output unchanged.",
+    title: "No geographic identifiers in the output.",
+    detail: "ZIP codes, census tracts, GEOIDs, coordinates, and addresses are removed from the linked output with no override, matched on or not. They stay in your original file.",
   },
 ];
 

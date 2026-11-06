@@ -260,13 +260,13 @@ export function ResultsView({
       {/* Identifier columns the guard kept out of this run (also in run_info.csv) */}
       {blocked.length > 0 && (
         <div className="rounded-lg border border-gray-200 bg-gray-50 p-3 text-xs text-gray-600">
-          <span className="font-semibold text-gray-800">Not used for matching:</span>{" "}
+          <span className="font-semibold text-gray-800">Removed from the output:</span>{" "}
           {blocked.map((b) => b.column).join(", ")} —{" "}
           {blocked.length === 1 ? "a geographic identifier." : "geographic identifiers."}{" "}
           ZIP codes, census tracts, GEOIDs, coordinates and addresses are never
-          matching variables (HIPAA / PII);{" "}
-          {blocked.length === 1 ? "the column passes" : "the columns pass"} through
-          to the output unchanged.
+          matching variables and never appear in the output (HIPAA / PII);{" "}
+          {blocked.length === 1 ? "the column stays" : "the columns stay"} in your
+          original file.
         </div>
       )}
 

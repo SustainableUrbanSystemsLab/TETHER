@@ -219,7 +219,7 @@ def _read_csv(path):
     return data[0], data[1:]
 
 
-def test_coordinator_drops_identifier_columns_and_keeps_them_in_the_output(tmp_path):
+def test_coordinator_drops_identifier_columns_from_the_output(tmp_path):
     target = _write_csv(tmp_path, "t.csv", ["pid", "zip", "a"],
                         [["t1", "30301", "10"], ["t2", "30302", "20"]])
     supp = _write_csv(tmp_path, "s.csv", ["zip", "a", "extra"],
@@ -227,14 +227,44 @@ def test_coordinator_drops_identifier_columns_and_keeps_them_in_the_output(tmp_p
     out = str(tmp_path / "out.csv")
     warnings = coordinator(target, supp, output=out)
     assert any("excluded 'zip'" in w and "geographic identifiers" in w for w in warnings)
+    assert any("is removed from the output entirely" in w for w in warnings)
     headers, rows = _read_csv(out)
-    # The target's own zip column is untouched; the supplemental one is a
-    # non-matching column and is appended like any other.
-    assert headers[:3] == ["pid", "zip", "a"]
-    assert "zip" in headers[3:]
+    # Neither file's zip column reaches the output — target's own copy and
+    # the supplemental "extra" column alike.
+    assert "zip" not in headers
+    assert headers[:3] == ["pid", "a", "extra"]
     assert float(rows[0][headers.index("euc_distance")]) == 0.0
+    # The original input files are untouched.
+    t_headers, _ = _read_csv(target)
+    assert t_headers == ["pid", "zip", "a"]
     _, detail = _read_csv(str(tmp_path / "out_detail.csv"))
     assert detail  # matched on 'a' alone
+
+
+def test_coordinator_drops_a_solo_identifier_column_never_shared(tmp_path):
+    # tract_geoid exists only in the supplemental file (no same-named target
+    # column) — never a matching candidate, so blocked_links never sees it,
+    # but it must still be stripped from the output: the real-world case
+    # (a census-tract extract's own GEOID column) this guard exists for.
+    target = _write_csv(tmp_path, "t.csv", ["pid", "a"], [["t1", "10"], ["t2", "20"]])
+    supp = _write_csv(tmp_path, "s.csv", ["tract_geoid", "a", "walkability"],
+                      [["13089020100", "10", "5"], ["13089020200", "20", "6"],
+                       ["13089020300", "90", "7"]])
+    out = str(tmp_path / "out.csv")
+    warnings = coordinator(target, supp, output=out)
+    assert any(
+        "removed 'tract_geoid'" in w and "supplemental file" in w and "from the output" in w
+        for w in warnings
+    )
+    headers, rows = _read_csv(out)
+    assert headers[:3] == ["pid", "a", "walkability"]
+    assert float(rows[0][headers.index("euc_distance")]) == 0.0
+    # The original supplemental file is untouched.
+    s_headers, _ = _read_csv(supp)
+    assert s_headers == ["tract_geoid", "a", "walkability"]
+    _, info = _read_csv(str(tmp_path / "out_run_info.csv"))
+    removed = dict(info)["identifier_columns_removed_from_output"]
+    assert "tract_geoid (supplemental)" in removed
 
 
 def test_coordinator_real_acs_files_never_match_on_census_tract(tmp_path):
@@ -243,15 +273,18 @@ def test_coordinator_real_acs_files_never_match_on_census_tract(tmp_path):
     note = [w for w in warnings if "excluded 'census tract'" in w]
     assert len(note) == 1 and "by column name" in note[0]
     headers, rows = _read_csv(out)
-    assert "census tract" in headers          # passes through
+    assert "census tract" not in headers      # removed from the output
     _, target_rows = _read_csv(str(ACS / "dataseta.csv"))
     assert len(rows) == len(target_rows)
     var_headers, _ = _read_csv(str(tmp_path / "acs_variables.csv"))
     _, variables = _read_csv(str(tmp_path / "acs_variables.csv"))
     assert "census tract" not in {r[var_headers.index("feature")] for r in variables}
     _, info = _read_csv(str(tmp_path / "acs_run_info.csv"))
-    blocked = dict(info)["identifier_columns_blocked"]
+    run_info = dict(info)
+    blocked = run_info["identifier_columns_blocked"]
     assert blocked.startswith("census tract: census tract identifiers (by column name)")
+    removed = run_info["identifier_columns_removed_from_output"]
+    assert "census tract (target)" in removed and "census tract (supplemental)" in removed
 
 
 def test_run_info_records_none_when_nothing_was_blocked(tmp_path):
@@ -259,7 +292,9 @@ def test_run_info_records_none_when_nothing_was_blocked(tmp_path):
     supp = _write_csv(tmp_path, "s.csv", ["a", "b"], [["10", "1"]])
     coordinator(target, supp, output=str(tmp_path / "o.csv"))
     _, info = _read_csv(str(tmp_path / "o_run_info.csv"))
-    assert dict(info)["identifier_columns_blocked"] == "none"
+    run_info = dict(info)
+    assert run_info["identifier_columns_blocked"] == "none"
+    assert run_info["identifier_columns_removed_from_output"] == "none"
 
 
 def test_coordinator_only_identifier_shared_is_an_explained_error(tmp_path):
@@ -289,7 +324,26 @@ def test_web_api_auto_links_drop_identifiers_with_a_warning():
     result = coordinate_in_memory(T_CSV, S_CSV)
     assert result["feature_names"] == ["a"]
     assert any("excluded 'census tract'" in w for w in result["warnings"])
-    assert "census tract" in result["linked_headers"]
+    assert "census tract" not in result["linked_headers"]
+    assert len(result["linked_rows"][0]) == len(result["linked_headers"])
+
+
+def test_web_api_drops_a_solo_identifier_column_never_shared():
+    # 'extra2' (supplemental-only tract GEOID) is never a matching
+    # candidate, so blocked_links never reports it — it must still be
+    # stripped from linked_headers/linked_rows.
+    t = "pid,census tract,a\nt1,13089020100,10\nt2,13089020200,20\n"
+    s = (
+        "census tract,a,tract_geoid\n"
+        "13089020100,10,13089020100\n13089020300,20,13089020300\n"
+        "13089020400,90,13089020400\n"
+    )
+    result = coordinate_in_memory(t, s)
+    assert "tract_geoid" not in result["linked_headers"]
+    assert any(
+        "removed 'tract_geoid'" in w and "supplemental file" in w
+        for w in result["warnings"]
+    )
 
 
 def test_web_api_explicit_identifier_link_is_refused():
@@ -315,7 +369,7 @@ def test_error_message_says_the_column_may_stay():
         "headerName": "zip", "header1Index": 1, "header2Index": 1, "kind": "zip",
         "side": "both", "column": "zip", "reason": "ZIP / postal codes (by column name)",
     }])
-    assert "passes through to the output" in str(err)
+    assert "removed from the output entirely" in str(err)
     assert isinstance(err, ValueError)
 
 

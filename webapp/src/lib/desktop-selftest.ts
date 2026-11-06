@@ -75,8 +75,8 @@ export async function runSelftestIfRequested(): Promise<void> {
       `engine matched on ${output.feature_names.join(", ")}`
     );
     check(
-      output.linked_headers.includes("census tract"),
-      "the blocked column did not pass through to the linked output"
+      !output.linked_headers.includes("census tract"),
+      "the blocked column was not removed from the linked output"
     );
 
     const blob = await buildResultsZip(

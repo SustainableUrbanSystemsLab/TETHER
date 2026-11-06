@@ -189,10 +189,11 @@ export function ColumnLinker({
           </ul>
           <p className="mt-2 text-xs text-red-700">
             ZIP codes, census tracts, GEOIDs, coordinates and addresses are
-            never used for matching (HIPAA / PII); there is no override. The
-            columns still pass through to your output unchanged. If one of
-            them is not an identifier, rename it (matched by name) or rescale
-            it (matched by its values) in the source file.
+            never used for matching (HIPAA / PII) and are removed from the
+            output entirely; there is no override. They still stay in your
+            original file. If one of them is not an identifier, rename it
+            (matched by name) or rescale it (matched by its values) in the
+            source file.
           </p>
         </div>
       )}

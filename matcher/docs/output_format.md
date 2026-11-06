@@ -12,7 +12,11 @@
    timestamp (UTC and local), and the settings this run used (linked
    variables, NNDR threshold, distance cutoff, minimum-confidence filter),
    plus `identifier_columns_blocked`: the shared geographic-identifier
-   columns kept out of the matching (`none` when there were none).
+   columns kept out of the matching (`none` when there were none), and
+   `identifier_columns_removed_from_output`: every geographic-identifier
+   column removed from the linked output — a superset of the blocked ones,
+   since this also catches a column that was never shared with the other
+   file (`none` when there were none).
    Input files are recorded by name only, never by path, so a results folder
    can be shared without leaking a directory tree. Written on every run —
    provenance is not optional: months later it is the only thing that says
@@ -43,16 +47,18 @@ at least one leading zero). There is no override (`matcher/identifiers.py`).
 
 - Auto-linked (the default): the column is dropped from matching and the run
   warns `excluded '<column>' from matching: <reason> — geographic identifiers
-  (HIPAA / PII) can never be matching variables. The column still passes
-  through to the output unchanged; …`. When nothing else is shared, the
-  "No shared columns" error says so.
+  (HIPAA / PII) can never be matching variables. The column is removed from
+  the output entirely; …`. When nothing else is shared, the "No shared
+  columns" error says so.
 - Explicit links (`links=[...]`, what the webapp sends): a link touching an
   identifier raises `IdentifierColumnError` (a `ValueError`) naming the column
   and the reason.
 
-Blocked columns are never removed from the files: the target's copy stays
-in the linked row, and a supplemental copy is appended like any other
-non-matching column.
+A geographic-identifier column is removed from the linked output entirely
+(`identifiers.identify_columns`, applied to every column of both files, not
+just the ones shared between them) — whether or not it was ever a matching
+candidate. It is never removed from the original file; only the linked
+output drops it.
 
 ## Linked dataset (`<output>.csv`)
 

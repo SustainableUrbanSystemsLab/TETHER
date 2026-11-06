@@ -7,7 +7,15 @@ from .ablation import ablation_sample_indices, ablation_suite
 from .about import TOOL_NAME, VERSION, authors_line, provenance_rows
 from .io import MISSING_TOKENS, load_csv, clean_val, drop_label_row, dump_csv
 from .align import find_common_headers, header_warnings, no_shared_columns_error
-from .identifiers import blocked_links, blocked_summary, blocked_warning, without_blocked
+from .identifiers import (
+    blocked_links,
+    blocked_summary,
+    blocked_warning,
+    identify_columns,
+    output_identifier_summary,
+    output_identifier_warning,
+    without_blocked,
+)
 from .standardize import dual_standardize, scale_compatibility_warnings
 from .distance import match_all, validate_threshold, validate_max_distance, winner_observed_stats
 from .merge import row_merge, new_header
@@ -174,12 +182,35 @@ skip_label_row=True):
 
     # ZIP codes, census tracts and other geographic identifiers are never
     # matching variables (HIPAA / PII) — dropped here, loudly, whatever the
-    # files share. They still pass through to the output like any other
-    # non-matching column. See identifiers.py.
+    # files share — AND removed from the linked output entirely, whether or
+    # not they were ever a matching candidate. See identifiers.py.
     blocked = blocked_links(common, h1, h2, rs1, rs2)
-    identifier_notes = [blocked_warning(b) for b in blocked]
     common = without_blocked(common, blocked)
     feature_names = [c["headerName"] for c in common]
+
+    target_identifiers = identify_columns(h1, rs1)
+    supp_identifiers = identify_columns(h2, rs2)
+    target_strip = {c["index"] for c in target_identifiers}
+    supp_strip = {c["index"] for c in supp_identifiers}
+    # row_merge drops target_strip columns, so a target column's position in
+    # the merged row is no longer its own header1Index once anything before
+    # it was stripped — this remaps original index -> merged-row index for
+    # the fill-from-match step below (never a stripped index itself: common
+    # excludes every blocked/identifier column already).
+    target_index_map = {
+        orig: new for new, orig in enumerate(
+            i for i in range(len(h1)) if i not in target_strip
+        )
+    }
+    blocked_h1 = {b["header1Index"] for b in blocked if b["side"] in ("target", "both")}
+    blocked_h2 = {b["header2Index"] for b in blocked if b["side"] in ("supplemental", "both")}
+    identifier_notes = (
+        [blocked_warning(b) for b in blocked]
+        + [output_identifier_warning(c, "target") for c in target_identifiers
+           if c["index"] not in blocked_h1]
+        + [output_identifier_warning(c, "supplemental") for c in supp_identifiers
+           if c["index"] not in blocked_h2]
+    )
 
     if not common:
         raise no_shared_columns_error(h1, h2, blocked=blocked)
@@ -264,7 +295,7 @@ skip_label_row=True):
             )
             tier = "No match"
             linked_rows.append(
-                row_merge(rs1[i], blank_supp_row, common)
+                row_merge(rs1[i], blank_supp_row, common, target_strip, supp_strip)
                 + ["", 0, "", 0, 0, 0, "", "", tier, flags]
             )
             detail_rows.append(
@@ -293,7 +324,7 @@ skip_label_row=True):
             )
             tier = "No match"
             linked_rows.append(
-                row_merge(rs1[i], blank_supp_row, common)
+                row_merge(rs1[i], blank_supp_row, common, target_strip, supp_strip)
                 + ["", 0, "", 0, 0, 0, "", "", tier, flags]
             )
             detail_rows.append(
@@ -328,7 +359,7 @@ skip_label_row=True):
             # Linked row goes out unlinked (no supplemental cells, no fill);
             # the detail row keeps the full diagnostics of the nearest row.
             linked_rows.append(
-                row_merge(rs1[i], blank_supp_row, common)
+                row_merge(rs1[i], blank_supp_row, common, target_strip, supp_strip)
                 + ["", 0, "", 0, 0, 0, "", "", f"{tier} (withheld)", flags]
             )
             detail_rows.append(
@@ -342,11 +373,11 @@ skip_label_row=True):
         # Fill missing target cells in shared columns from the matched row
         # (raw value verbatim) and record which columns were filled. Output
         # completion only — matching itself never imputes.
-        merged = row_merge(rs1[i], rs2[j], common)
+        merged = row_merge(rs1[i], rs2[j], common, target_strip, supp_strip)
         filled = []
         for k, c in enumerate(common):
             if filtered_rs1[i][k] is None and filtered_rs2[j][k] is not None:
-                merged[c["header1Index"]] = rs2[j][c["header2Index"]]
+                merged[target_index_map[c["header1Index"]]] = rs2[j][c["header2Index"]]
                 filled.append(c["headerName"])
 
         linked_rows.append(
@@ -363,7 +394,7 @@ skip_label_row=True):
 
     # Write linked dataset
     linked_headers = (
-        new_header(h1, h2, common)
+        new_header(h1, h2, common, target_strip, supp_strip)
         + ["euc_distance", "repeats", "nndr", "near_miss_count", "mnn_confirmed",
            "features_used", "exact_on_observed", "filled_from_match",
            "confidence", "flags"]
@@ -417,6 +448,8 @@ skip_label_row=True):
             ("label_rows_skipped",
              "; ".join(n.split(" looks like")[0] for n in label_notes) or "none"),
             ("identifier_columns_blocked", blocked_summary(blocked)),
+            ("identifier_columns_removed_from_output",
+             output_identifier_summary(target_identifiers, supp_identifiers)),
             ("matching_variables", "; ".join(feature_names)),
             ("nndr_threshold", threshold),
             ("max_distance_cutoff", "off" if max_distance is None else max_distance),
