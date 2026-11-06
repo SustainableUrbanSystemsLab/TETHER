@@ -1,3 +1,4 @@
+import { AcronymTooltip } from "@/components/AcronymTooltip";
 import { Fragment, useMemo, useState } from "react";
 import { buildResultsZip, triggerDownload } from "@/lib/zip-builder";
 import { tierChipClasses, tierRank, tierSentence } from "@/lib/confidence-text";
@@ -279,7 +280,7 @@ export function ResultsView({
       {/* SMD bar chart */}
       <details className="rounded-lg border border-gray-200 bg-surface p-4">
         <summary className="cursor-pointer text-sm font-semibold text-gray-900">
-          Dataset balance (SMD)
+          Dataset balance (<AcronymTooltip label="SMD" explanation="Standardized Mean Difference: compares each variable’s mean across the datasets relative to its spread. Values closer to zero indicate better balance; below 0.10 is generally considered balanced." />)
         </summary>
         <div className="mt-3 space-y-1">
           {feature_names.map((name, i) => (
