@@ -12,7 +12,7 @@ export const MATCHER_VERSION = "0.10.1";
 export const AUTHORS = ["Dr. Benson Ku", "Dr. Patrick Kastner"] as const;
 export const ORGANIZATION = "Emory University and Georgia Institute of Technology";
 export const REPO_URL =
-  "https://github.com/SustainableUrbanSystemsLab/NeighborhoodMatcher";
+  "https://github.com/SustainableUrbanSystemsLab/TETHER";
 export const SITE_URL = "https://tether-dev.netlify.app/";
 export const ORGANIZATION_URL = "https://sustainableurbansystems.com/";
 /** Mirrors matcher/about.py AUTHOR_URLS — one entry per AUTHORS name that has a public profile. */

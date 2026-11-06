@@ -4,7 +4,7 @@ version = "0.10.1"
 description = "Match participant-level data to neighborhood-scale records, entirely on this computer"
 authors = ["Dr. Benson Ku", "Dr. Patrick Kastner"]
 license = ""
-repository = "https://github.com/SustainableUrbanSystemsLab/NeighborhoodMatcher"
+repository = "https://github.com/SustainableUrbanSystemsLab/TETHER"
 edition = "2024"
 rust-version = "1.90"
 

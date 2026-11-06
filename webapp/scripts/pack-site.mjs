@@ -53,7 +53,7 @@ Updating
 Replace the whole folder with a newer zip; do not mix files from two versions.
 The matching engine and the interface are built together and must stay together.
 
-Source and issue tracker: https://github.com/SustainableUrbanSystemsLab/NeighborhoodMatcher
+Source and issue tracker: https://github.com/SustainableUrbanSystemsLab/TETHER
 `;
 
 function walk(dir) {

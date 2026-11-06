@@ -16,7 +16,7 @@ TOOL_NAME = "TETHER"
 VERSION = "0.10.1"
 AUTHORS = ("Dr. Benson Ku", "Dr. Patrick Kastner")
 ORGANIZATION = "Emory University and Georgia Institute of Technology"
-REPO_URL = "https://github.com/SustainableUrbanSystemsLab/NeighborhoodMatcher"
+REPO_URL = "https://github.com/SustainableUrbanSystemsLab/TETHER"
 SITE_URL = "https://tether-dev.netlify.app/"
 ORGANIZATION_URL = "https://sustainableurbansystems.com/"
 # One entry per AUTHORS name that has a public profile to link to; an author

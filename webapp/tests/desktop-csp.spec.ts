@@ -129,5 +129,5 @@ test("@desktop links to other sites open in the system browser", async ({ page }
           .map((c) => c.args.url)
       )
     )
-    .toEqual(["https://github.com/SustainableUrbanSystemsLab/NeighborhoodMatcher/releases/latest"]);
+    .toEqual(["https://github.com/SustainableUrbanSystemsLab/TETHER/releases/latest"]);
 });

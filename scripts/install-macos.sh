@@ -4,7 +4,7 @@
 # quarantine flag that browsers put on downloads; curl sets no such flag, so an
 # app installed this way opens like any other. One line, from Terminal:
 #
-#   curl -fsSL https://github.com/SustainableUrbanSystemsLab/NeighborhoodMatcher/releases/latest/download/install-macos.sh | sh
+#   curl -fsSL https://github.com/SustainableUrbanSystemsLab/TETHER/releases/latest/download/install-macos.sh | sh
 #
 # It downloads the latest release's .dmg, copies the app into /Applications
 # (~/Applications when /Applications is not writable), replacing an older copy,
@@ -17,7 +17,7 @@
 #   NBHDMATCH_NO_OPEN=1    do not open the app afterwards
 set -eu
 
-RELEASE_DMG="https://github.com/SustainableUrbanSystemsLab/NeighborhoodMatcher/releases/latest/download/NeighborhoodMatcher-darwin-aarch64.dmg"
+RELEASE_DMG="https://github.com/SustainableUrbanSystemsLab/TETHER/releases/latest/download/NeighborhoodMatcher-darwin-aarch64.dmg"
 APP="TETHER.app"
 
 say() { printf '%s\n' "$*"; }
