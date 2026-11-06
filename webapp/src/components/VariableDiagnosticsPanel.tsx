@@ -95,16 +95,17 @@ export function VariableDiagnosticsPanel({
       : [];
 
   return (
-    <div className="rounded-lg border border-gray-200 bg-surface p-4">
+    <details className="rounded-lg border border-gray-200 bg-surface p-4">
+      <summary className="cursor-pointer text-sm font-semibold text-gray-900">
+        Variable check
+        {flagged.length > 0 && ` · ${flagged.length} to review`}
+        {ablation.status === "error" && " · failed"}
+        {ablation.status === "running" && " · running"}
+      </summary>
       <div className="flex items-start justify-between gap-3">
         <div>
-          <h3 className="text-sm font-semibold text-gray-900">
-            Variable check
-          </h3>
           <p className="mt-0.5 text-xs text-gray-500">
-            More variables are not always better: one with heavy missingness
-            or a different definition in the two files can make every match
-            worse. This table checks each matching variable.
+            Missing values, dataset differences, and the effect of removing each variable.
           </p>
         </div>
         {ablation.status === "gated" && (
@@ -215,6 +216,6 @@ export function VariableDiagnosticsPanel({
           Variable check failed: {ablation.message}
         </p>
       )}
-    </div>
+    </details>
   );
 }

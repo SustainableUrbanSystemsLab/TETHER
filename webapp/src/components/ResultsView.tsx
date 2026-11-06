@@ -178,7 +178,7 @@ export function ResultsView({
     <div className="space-y-4">
       {/* Summary cards */}
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
-        <SummaryCard label="Rows matched" value={summary.total.toString()} tone="blue" />
+        <SummaryCard label="Rows processed" value={summary.total.toString()} tone="blue" />
         <SummaryCard
           label="High confidence"
           value={`${tiers.High} (${highPct.toFixed(1)}%)`}
@@ -233,27 +233,19 @@ export function ResultsView({
           <ul className="list-disc pl-4 text-xs text-red-800">
             {zeroOverlapCount > 0 && (
               <li>
-                {zeroOverlapCount} target row(s) have no valid match — they
-                share no observed features with any supplemental row (all
-                shared columns missing). They appear with blank match cells
-                in the output.
+                {zeroOverlapCount} row(s) left unlinked: no shared observed values.
               </li>
             )}
             {(summary.rejected ?? 0) > 0 && (
               <li>
-                {summary.rejected} target row(s) were reported as no match
-                because their nearest supplemental row exceeded the distance
-                cutoff ({summary.max_distance?.toFixed(2)} per feature).
-                Their diagnostics are preserved in the detail file and
-                drill-down.
+                {summary.rejected} row(s) left unlinked: distance exceeds
+                the cutoff ({summary.max_distance?.toFixed(2)} per feature).
               </li>
             )}
             {(summary.withheld ?? 0) > 0 && (
               <li>
-                {summary.withheld} link(s) were withheld below your minimum
-                confidence ({summary.min_confidence}) — those rows appear
-                unlinked in the linked dataset; the nearest row and full
-                diagnostics are kept in the detail file and drill-down.
+                {summary.withheld} link(s) withheld: below {summary.min_confidence}
+                {" "}confidence.
               </li>
             )}
             {(output.warnings ?? []).map((w, i) => (
@@ -285,26 +277,20 @@ export function ResultsView({
       />
 
       {/* SMD bar chart */}
-      <div className="rounded-lg border border-gray-200 bg-surface p-4">
-        <div className="mb-2 flex items-baseline justify-between">
-          <h3 className="text-sm font-semibold text-gray-900">
-            Standardized Mean Difference per feature
-          </h3>
-          <span className="text-xs text-gray-500">
-            Green &lt; {SMD_WARN} · Amber &lt; {SMD_POOR} · Red ≥ {SMD_POOR}
-          </span>
-        </div>
-        <div className="space-y-1">
+      <details className="rounded-lg border border-gray-200 bg-surface p-4">
+        <summary className="cursor-pointer text-sm font-semibold text-gray-900">
+          Dataset balance (SMD)
+        </summary>
+        <div className="mt-3 space-y-1">
           {feature_names.map((name, i) => (
             <SmdRow key={name} name={name} value={smd[i] ?? 0} />
           ))}
         </div>
         <p className="mt-3 text-xs text-gray-500">
-          |SMD| &gt; 0.10 indicates feature imbalance; &gt; 0.25 is poor (
-          <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC3472075/" target="_blank" rel="noreferrer" className="text-blue-600 dark:text-blue-400 underline hover:text-blue-800">Austin, PMC3472075</a>
-          ).
+          |SMD|: balanced &lt; {SMD_WARN} · poor ≥ {SMD_POOR}.{" "}
+          <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC3472075/" target="_blank" rel="noreferrer" className="text-blue-600 dark:text-blue-400 underline hover:text-blue-800">Reference</a>
         </p>
-      </div>
+      </details>
 
       {/* Per-row drill-down */}
       <div className="rounded-lg border border-gray-200 bg-surface">
@@ -541,16 +527,13 @@ export function ResultsView({
               Saved to {savedPath}
             </span>
           )}
-          <span className="text-[11px] text-gray-400">
-            Linked CSV, match detail, run info, data + match stats, SMD,
-            variable diagnostics, agreement, contact, and original uploads.
-          </span>
         </div>
       </div>
 
       {/* Provenance: the same identity stamped into run_info.csv and the
           package README, so what is on screen matches what is downloaded. */}
-      <div className="border-t border-gray-200 pt-3 text-[11px] leading-relaxed text-gray-500">
+      <details className="border-t border-gray-200 pt-3 text-[11px] leading-relaxed text-gray-500">
+        <summary className="cursor-pointer">Run details</summary>
         <p>
           Processed by{" "}
           <a
@@ -566,11 +549,9 @@ export function ResultsView({
           </span>
         </p>
         <p title={utcTimestamp(completedAt)}>
-          Generated {localTimestamp(completedAt)} — the downloaded package
-          carries this stamp, the tool version, and the authors in
-          run_info.csv.
+          Generated {localTimestamp(completedAt)}
         </p>
-      </div>
+      </details>
     </div>
   );
 }

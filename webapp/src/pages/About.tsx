@@ -291,37 +291,51 @@ export default function About() {
               </p>
               <ul className="mt-2 space-y-1 text-xs">
                 <li>
-                  <a href={`${REPO_URL}/releases/latest/download/NeighborhoodMatcher-darwin-aarch64.dmg`} className={LINK}>
+                  <a href={`${REPO_URL}/releases/latest/download/NeighborhoodMatcher-darwin-aarch64.dmg`} className={`${LINK} inline-flex items-center gap-2`}>
+                    <svg viewBox="0 0 24 24" className="h-4 w-4 shrink-0" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false">
+                      <rect x="3" y="3" width="18" height="13" rx="2" /><path d="M12 16v5m-4 0h8" />
+                    </svg>
                     macOS (Apple Silicon) .dmg
                   </a>
                 </li>
                 <li>
-                  <a href={`${REPO_URL}/releases/latest/download/NeighborhoodMatcher-windows-x64-setup.exe`} className={LINK}>
+                  <a href={`${REPO_URL}/releases/latest/download/NeighborhoodMatcher-windows-x64-setup.exe`} className={`${LINK} inline-flex items-center gap-2`}>
+                    <svg viewBox="0 0 24 24" className="h-4 w-4 shrink-0" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false">
+                      <path d="M3 5.5 11 4.4v7H3zm9-1.2L22 3v8.4H12zM3 12.5h8v7L3 18.4zm9 0h10V21l-10-1.4z" fill="currentColor" stroke="none" />
+                    </svg>
                     Windows (x64) installer
                   </a>
                   <span className="text-gray-500"> — WebView2 runtime included (~220 MB)</span>
                 </li>
                 <li>
-                  <a href={`${REPO_URL}/releases/latest`} target="_blank" rel="noreferrer" className={LINK}>
+                  <a href={`${REPO_URL}/releases/latest`} target="_blank" rel="noreferrer" className={`${LINK} inline-flex items-center gap-2`}>
+                    <svg viewBox="0 0 24 24" className="h-4 w-4 shrink-0" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false">
+                      <path d="M12 3v12m-4-4 4 4 4-4M4 16v5h16v-5" />
+                    </svg>
                     All releases
                   </a>
                 </li>
               </ul>
-              <p className="mt-2 text-[11px] leading-relaxed text-gray-500">
-                The apps carry no developer certificate yet. macOS blocks
-                the first launch: click <em>Done</em>, open <em>System
-                Settings</em> → <em>Privacy &amp; Security</em> and click{" "}
-                <em>Open Anyway</em>. Or install from Terminal, with no
-                prompt at all:
-              </p>
-              <p className="mt-1 text-[11px] leading-relaxed text-gray-700">
-                <code className="break-all">curl -fsSL {REPO_URL}/releases/latest/download/install-macos.sh | sh</code>
-              </p>
-              <p className="mt-1 text-[11px] leading-relaxed text-gray-500">
-                Windows SmartScreen: <em>More info</em>, then <em>Run
-                anyway</em>. Your IT department may need to approve the
-                installer first.
-              </p>
+              <details className="mt-3 text-xs text-gray-600">
+                <summary className="cursor-pointer font-medium text-gray-800">
+                  Installation help
+                </summary>
+                <p className="mt-2 text-[11px] leading-relaxed text-gray-500">
+                  The apps carry no developer certificate yet. macOS blocks
+                  the first launch: click <em>Done</em>, open <em>System
+                  Settings</em> → <em>Privacy &amp; Security</em> and click{" "}
+                  <em>Open Anyway</em>. Or install from Terminal, with no
+                  prompt at all:
+                </p>
+                <p className="mt-1 text-[11px] leading-relaxed text-gray-700">
+                  <code className="break-all">curl -fsSL {REPO_URL}/releases/latest/download/install-macos.sh | sh</code>
+                </p>
+                <p className="mt-1 text-[11px] leading-relaxed text-gray-500">
+                  Windows SmartScreen: <em>More info</em>, then <em>Run
+                  anyway</em>. Your IT department may need to approve the
+                  installer first.
+                </p>
+              </details>
             </div>
             <div className="rounded-lg border border-gray-200 p-3">
               <h3 className="font-semibold text-gray-900">Host it yourself</h3>

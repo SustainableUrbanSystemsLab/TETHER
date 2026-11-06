@@ -544,17 +544,15 @@ export default function Match() {
           {step === "upload" && (
             <div className="space-y-6">
               <p className="text-sm leading-relaxed text-gray-600">
-                For each row in your <strong>target</strong> dataset, the tool
-                finds the most similar row in the <strong>supplemental</strong>{" "}
-                dataset based on the shared characteristics you choose —
-                linking new information without ever matching on ZIP codes,
-                census tract IDs or other geographic identifiers, which the
-                tool refuses to use as matching variables.
+                Match each row in your <strong>target</strong> dataset to a
+                similar row in your <strong>supplemental</strong> dataset using
+                shared numeric characteristics. Geographic identifiers are
+                excluded from matching.
               </p>
               <div className="grid gap-4 md:grid-cols-2">
                 <FileUpload
                   label="Target Dataset"
-                  description="The dataset you want to add information to (e.g., your study dataset)"
+                  description="The dataset you want to add information to"
                   onFileLoaded={(d) => {
                     leaveDemo();
                     setTarget(d);
@@ -567,7 +565,7 @@ export default function Match() {
                 />
                 <FileUpload
                   label="Supplemental Dataset"
-                  description="The dataset containing the information you want to link in (e.g., a public census extract)"
+                  description="The dataset with information to add"
                   onFileLoaded={(d) => {
                     leaveDemo();
                     setSupplemental(d);
@@ -604,9 +602,9 @@ export default function Match() {
                   )}
                 </p>
               )}
-              <details open className="rounded-lg border border-gray-200 bg-surface p-4 text-sm text-gray-600">
+              <details className="rounded-lg border border-gray-200 bg-surface p-4 text-sm text-gray-600">
                 <summary className="cursor-pointer font-medium text-gray-800">
-                  File format &amp; pre-upload checklist
+                  File requirements &amp; checklist
                 </summary>
                 <div className="mt-3">
                   <DataChecklist />
