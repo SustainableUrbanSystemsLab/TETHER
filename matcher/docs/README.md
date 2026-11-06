@@ -1,5 +1,7 @@
 # TETHER — `matcher/` Documentation
 
+TETHER: Tying Environmental context To Human records, Ensuring Residential privacy.
+
 `matcher/` is the Python backend that links a target dataset to a supplemental
 dataset using standardized Euclidean distance and reports a set of match-quality
 signals for each pair. It is consumed both by a CLI pipeline (writes CSVs) and

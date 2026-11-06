@@ -1,5 +1,7 @@
 # TETHER (webapp)
 
+TETHER: Tying Environmental context To Human records, Ensuring Residential privacy.
+
 Client-side webapp for matching and merging two CSV datasets using
 standardized Euclidean distance. Built for researchers who need to enrich a
 target dataset with columns from a supplemental reference dataset based on

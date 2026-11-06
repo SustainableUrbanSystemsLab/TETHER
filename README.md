@@ -5,9 +5,7 @@
 <h1 align="center">TETHER</h1>
 
 <p align="center">
-  Match participant-level data to neighborhood-scale records (ACS census
-  tracts and similar) — with honest, plain-English quality signals for every
-  match.
+  Tying Environmental context To Human records, Ensuring Residential privacy
 </p>
 
 <p align="center">

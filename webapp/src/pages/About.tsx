@@ -216,6 +216,10 @@ export default function About() {
           </div>
         </div>
 
+        <p className="mb-6 text-sm text-gray-600">
+          <strong>TETHER:</strong> Tying Environmental context To Human records, Ensuring Residential privacy
+        </p>
+
         <section className="mb-6 rounded-lg border border-gray-200 bg-surface p-5">
           <h2 className="mb-1 text-lg font-semibold text-gray-900">
             The matching algorithm
