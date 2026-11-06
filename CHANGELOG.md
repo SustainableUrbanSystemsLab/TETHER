@@ -6,6 +6,12 @@ All notable changes to TETHER. The format follows
 version (`python scripts/bump_version.py patch|minor|major`), and CI refuses a
 pull request that changes shipped code without one.
 
+## [1.0.1] - 2026-11-06
+
+### Changed
+
+- **Parallel workers** moved behind a collapsed "Advanced settings" disclosure on the Link step — a CPU-tuning knob almost nobody needs to touch, and Auto already picks a near-optimal count (cores minus one, memory- and work-aware). The near-miss threshold, distance cutoff and minimum-confidence controls stay visible as before.
+
 ## [1.0.0] - 2026-11-06
 
 ### Changed

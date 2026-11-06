@@ -721,13 +721,20 @@ export default function Match() {
                 onChange={setMinConfidence}
               />
 
-              <WorkerControl
-                value={workerOverride}
-                onChange={(n) => {
-                  setWorkerOverride(n);
-                  saveWorkerCount(n);
-                }}
-              />
+              <details className="rounded-lg border border-gray-200 bg-surface p-4 text-sm text-gray-600">
+                <summary className="cursor-pointer font-medium text-gray-800">
+                  Advanced settings
+                </summary>
+                <div className="mt-3">
+                  <WorkerControl
+                    value={workerOverride}
+                    onChange={(n) => {
+                      setWorkerOverride(n);
+                      saveWorkerCount(n);
+                    }}
+                  />
+                </div>
+              </details>
 
               {runError && (
                 <div className="rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700">
@@ -914,7 +921,7 @@ function WorkerControl({
 }) {
   const reported = reportedCores();
   return (
-    <div className="rounded-lg border border-gray-200 bg-surface p-4">
+    <div>
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <h3 className="text-sm font-semibold text-gray-900">
