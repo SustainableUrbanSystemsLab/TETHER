@@ -189,44 +189,38 @@ interface Item {
 const ITEMS: Item[] = [
   {
     Icon: PictoFormat,
-    title: "CSV: one header row, then one row per geographic unit.",
-    detail:
-      "Matching variables must be numeric. A second header or label row on line 2 (as in NDA/ABCD exports) is detected and skipped, with a notice.",
+    title: "Use numeric CSV data.",
+    detail: "Include one header row and one row per geographic unit. A second label row, as in NDA/ABCD exports, is detected and skipped.",
   },
   {
     Icon: PictoNames,
-    title: "Same column names in both files.",
-    detail: "Differently named columns can be linked by hand at Link Columns.",
+    title: "Link corresponding columns.",
+    detail: "Matching names link automatically. For different names, choose the corresponding columns at Link Columns. Check that each pair measures the same characteristic.",
   },
   {
     Icon: PictoScale,
-    title: "Same units and scale, raw values.",
-    detail:
-      "Not 0.72 in one file and 72% in the other; never already-standardized (z-scored) columns.",
+    title: "Use the same units.",
+    detail: "Supply raw values on the same scale in both files: 0.72 and 72 are different. Do not use already standardized, z-scored columns.",
   },
   {
     Icon: PictoDefinition,
-    title: "Same definition and coding.",
-    detail:
-      "A poverty rate at 100% of the poverty line in one file and 180% in the other looks valid but degrades every link. The results page checks for this (offset SMD).",
+    title: "Match definitions and coding.",
+    detail: "Both columns must measure the same thing. For example, poverty rates based on different income thresholds are not interchangeable, even with matching column names.",
   },
   {
     Icon: PictoMissing,
-    title: "Missing values blank or NA.",
-    detail:
-      "Convert sentinel codes like 9999 or -99 to blanks first; left in, they count as real extreme values.",
+    title: "Leave missing values blank or NA.",
+    detail: "Replace sentinel codes such as 9999 or -99 with blanks before uploading. Otherwise, those codes are treated as real values and distort distances.",
   },
   {
     Icon: PictoFewer,
-    title: "Fewer well-measured variables beat many spotty ones.",
-    detail:
-      "Missing values are never imputed — each adds a fixed distance penalty. Exclude weak variables at Link Columns; the results page tells you if one is hurting the linkage.",
+    title: "Prefer well-measured variables.",
+    detail: "Missing values add a fixed penalty; they are never imputed. Exclude weak variables at Link Columns and review the variable check after matching.",
   },
   {
     Icon: PictoNoIdentifier,
-    title: "No ZIP codes, census tracts or other geographic identifiers as matching variables.",
-    detail:
-      "Columns named zip, tract, GEOID, lat/lon or address — or holding such codes — are blocked at Link Columns with no override (HIPAA / PII). They still pass through to your output unchanged.",
+    title: "Exclude geographic identifiers.",
+    detail: "ZIP codes, census tracts, GEOIDs, coordinates, and addresses are blocked from matching, with no override. These columns still pass through to your output unchanged.",
   },
 ];
 

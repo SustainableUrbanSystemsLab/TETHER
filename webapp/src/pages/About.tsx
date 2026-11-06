@@ -28,9 +28,7 @@ const ALGORITHM_STEPS: Array<{ title: string; body: React.ReactNode }> = [
     title: "Identify shared columns.",
     body: (
       <>
-        Columns with the same name in both files are linked automatically;
-        you can link the others by hand. A column can be left out of the
-        matching (an ID column, for example) and still appear in the output.
+        Columns with matching names link automatically; link others by hand. Exclude identifiers or unwanted variables from matching while keeping them in the output.
       </>
     ),
   },
@@ -38,10 +36,7 @@ const ALGORITHM_STEPS: Array<{ title: string; body: React.ReactNode }> = [
     title: "Put every variable on the same scale.",
     body: (
       <>
-        Each variable is converted to a z-score using the mean and standard
-        deviation of both files together, so a variable with big numbers
-        (rent in dollars) does not count more than one with small numbers
-        (a percentage).
+        Variables become z-scores using both files together. This keeps large numeric values, such as dollar amounts, from outweighing smaller values simply because of their scale.
       </>
     ),
   },
@@ -49,10 +44,7 @@ const ALGORITHM_STEPS: Array<{ title: string; body: React.ReactNode }> = [
     title: "Measure similarity.",
     body: (
       <>
-        For each target row, the tool computes the straight-line (Euclidean)
-        distance to every supplemental row across all the variables. A small
-        distance means the rows are alike (say 0.03); a large one means they
-        differ (say 0.99).
+        The tool measures Euclidean distance from each target row to every supplemental row across your chosen variables. Smaller distances mean more similar rows.
       </>
     ),
   },
@@ -60,8 +52,7 @@ const ALGORITHM_STEPS: Array<{ title: string; body: React.ReactNode }> = [
     title: "Pick the best match.",
     body: (
       <>
-        The closest row wins. If two rows tie exactly, the first one in file
-        order is chosen, the same way every time, and the row is flagged.
+        The closest row wins. For an exact tie, the first row in file order is selected and flagged, so repeated runs give the same result.
       </>
     ),
   },
@@ -95,13 +86,7 @@ const SIGNALS: Array<{
     Icon: IconTier,
     body: (
       <>
-        <strong>High</strong>: one row is clearly the closest, the pairing
-        holds in both directions, and every variable was compared.{" "}
-        <strong>Medium</strong>: a reasonable match, but other rows were
-        nearly as close or some variables were missing.{" "}
-        <strong>Low</strong>: an exact tie, a one-sided pairing, a ratio
-        close to 1, or only one variable to go on.{" "}
-        <strong>No match</strong>: nothing could be assigned.
+        <strong>High</strong> indicates a clear, mutual match with complete data. <strong>Medium</strong> and <strong>Low</strong> indicate increasing ambiguity or limited evidence. <strong>No match</strong> means no row was assigned.
       </>
     ),
   },
@@ -111,11 +96,7 @@ const SIGNALS: Array<{
     Icon: IconNndr,
     body: (
       <>
-        NNDR is the best distance divided by the second-best (
-        <a href="https://doi.org/10.1023/B:VISI.0000029664.99615.94" target="_blank" rel="noreferrer" className={LINK}>Lowe 2004</a>
-        ). Near 0 means one row stood out; near 1 means two rows were about
-        as close. The near-miss count is how many other rows were almost as
-        close as the winner.
+        NNDR divides the best distance by the second-best: near 0 means a clear winner; near 1 means ambiguity. Near misses count close alternatives (<a href="https://doi.org/10.1023/B:VISI.0000029664.99615.94" target="_blank" rel="noreferrer" className={LINK}>Lowe 2004</a>).
       </>
     ),
   },
@@ -125,11 +106,7 @@ const SIGNALS: Array<{
     Icon: IconMnn,
     body: (
       <>
-        Confirmed means the supplemental row is also closest to this target.
-        Not confirmed means it is actually closer to a different target row,
-        so check the match before you use it (
-        <a href="https://doi.org/10.5220/0001787803310340" target="_blank" rel="noreferrer" className={LINK}>Muja &amp; Lowe 2009</a>
-        ).
+        Confirmed means both rows are each other’s nearest neighbor. Otherwise, the supplemental row is closer to another target; review the pairing before using it (<a href="https://doi.org/10.5220/0001787803310340" target="_blank" rel="noreferrer" className={LINK}>Muja &amp; Lowe 2009</a>).
       </>
     ),
   },
@@ -139,10 +116,7 @@ const SIGNALS: Array<{
     Icon: IconFeatures,
     body: (
       <>
-        Missing values are never compared; they add a fixed penalty instead.
-        A match on 1 of 4 variables rests on much less than a match on 4 of
-        4. The tool also tells you when the winner matches exactly on every
-        variable that was available.
+        Only values observed in both rows are compared; missing values add a fixed penalty. More shared variables give the match more evidence. Exact observed matches are also marked.
       </>
     ),
   },
@@ -156,9 +130,7 @@ const SIGNALS: Array<{
     Icon: IconTies,
     body: (
       <>
-        <code>repeats</code> counts the rows at the minimum distance,
-        including the winner (1 means no tie). The first row in file order is
-        chosen, the same way every time, and the row is flagged.
+        <code>repeats</code> counts rows at the minimum distance, including the winner. A value of 1 means no tie. Ties select the first row in file order and are flagged.
       </>
     ),
   },
@@ -168,9 +140,7 @@ const SIGNALS: Array<{
     Icon: IconContribution,
     body: (
       <>
-        For information only. If one column accounts for most of a{" "}
-        <em>large</em> distance, check its units or scale. One column
-        dominating a small distance is normal.
+        Each variable contributes a share of the distance. If one dominates a large distance, check its units or scale. Dominating a small distance is usually unremarkable.
       </>
     ),
   },
@@ -180,10 +150,7 @@ const SIGNALS: Array<{
     Icon: IconSmd,
     body: (
       <>
-        Below 0.10 is good, above 0.25 is poor (
-        <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC3472075/" target="_blank" rel="noreferrer" className={LINK}>Austin</a>
-        ). This looks at the two datasets as a whole, not at any single
-        match.
+        SMD measures overall balance for each variable, rather than individual match quality. Absolute values below 0.10 indicate good balance; values at or above 0.25 indicate poor balance (<a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC3472075/" target="_blank" rel="noreferrer" className={LINK}>Austin</a>).
       </>
     ),
   },
@@ -193,8 +160,7 @@ const SIGNALS: Array<{
     Icon: IconFlags,
     body: (
       <>
-        The specific reasons, written out in one line. The confidence tier
-        is the short version.
+        Flags explain why a match needs review, such as ties, missing values, or a one-sided pairing. Use them alongside the confidence tier to inspect individual rows.
       </>
     ),
   },
@@ -285,19 +251,13 @@ export default function About() {
             <div className="rounded-lg border border-gray-200 p-3">
               <h3 className="font-semibold text-gray-900">Keep this site offline</h3>
               <p className="mt-1 text-xs leading-relaxed text-gray-600">
-                After one visit this device keeps working without a
-                connection — the footer says{" "}
-                <em>Available offline on this device</em> once everything is
-                cached. To get an app icon, use your browser&apos;s{" "}
-                <em>Install</em> option (address-bar icon or browser menu).
+                Wait for <em>Available offline on this device</em> in the footer. You can then use TETHER without a connection or install it from your browser menu.
               </p>
             </div>
             <div className="rounded-lg border border-gray-200 p-3">
               <h3 className="font-semibold text-gray-900">Desktop app</h3>
               <p className="mt-1 text-xs leading-relaxed text-gray-600">
-                For a computer that never goes online (a secure enclave or
-                VDI). Same engine, everything included, no download at run
-                time.
+                Install TETHER on a computer with no Internet access, including secure environments. The matching engine and runtime are bundled, so no additional downloads are needed.
               </p>
               <ul className="mt-2 space-y-1 text-xs">
                 <li>
@@ -350,11 +310,7 @@ export default function About() {
             <div className="rounded-lg border border-gray-200 p-3">
               <h3 className="font-semibold text-gray-900">Host it yourself</h3>
               <p className="mt-1 text-xs leading-relaxed text-gray-600">
-                A zip of this exact build for an institution&apos;s own web
-                server or intranet — a static folder with no external
-                dependencies. The included HOSTING.txt lists the two server
-                settings that matter (index.html fallback, .wasm content
-                type).
+                Download this build for your institution’s server or intranet. It includes all dependencies and a HOSTING.txt file with setup instructions for your server administrator.
               </p>
               <p className="mt-2 text-xs">
                 {/* The desktop app does not embed the zip: link the website's copy. */}
