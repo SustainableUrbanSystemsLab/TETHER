@@ -6,6 +6,12 @@ All notable changes to TETHER. The format follows
 version (`python scripts/bump_version.py patch|minor|major`), and CI refuses a
 pull request that changes shipped code without one.
 
+## [1.0.2] - 2026-11-06
+
+### Fixed
+
+- The TETHER logo's tooltip ("Back to the landing page") opened upward and off the top of the screen, since the logo sits at the very top of the page. `Tooltip` gains a `placement` prop ("top", the default, or "right"); the logo link now opens its tooltip to the right instead.
+
 ## [1.0.1] - 2026-11-06
 
 ### Changed

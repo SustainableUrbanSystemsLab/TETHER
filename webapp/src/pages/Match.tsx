@@ -525,7 +525,7 @@ export default function Match() {
     <div className="min-h-screen bg-canvas">
       <div className="mx-auto max-w-4xl p-4">
         <div className="mb-2 flex items-center justify-between">
-          <Tooltip text="Back to the landing page">
+          <Tooltip text="Back to the landing page" placement="right">
             <Link to="/" className="flex items-center gap-2.5">
               <img src="/logo.svg" alt="" className="h-8 w-8" />
               <h1 className="text-2xl font-bold text-gray-900">TETHER</h1>

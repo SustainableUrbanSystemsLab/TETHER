@@ -19,10 +19,15 @@ export function Tooltip({
   text,
   children,
   className = "",
+  /** "top" (default) centers the popup above the trigger; "right" opens it
+   *  to the trigger's right instead, for a trigger near the top edge of
+   *  the viewport, where "top" would render off-screen. */
+  placement = "top",
 }: {
   text: string;
   children: ReactNode;
   className?: string;
+  placement?: "top" | "right";
 }) {
   const id = useId();
   const [open, setOpen] = useState(false);
@@ -31,7 +36,12 @@ export function Tooltip({
 
   function openAt() {
     const rect = triggerRef.current?.getBoundingClientRect();
-    if (rect) setPos({ top: rect.top - 8, left: rect.left + rect.width / 2 });
+    if (!rect) return;
+    setPos(
+      placement === "right"
+        ? { top: rect.top + rect.height / 2, left: rect.right + 8 }
+        : { top: rect.top - 8, left: rect.left + rect.width / 2 }
+    );
     setOpen(true);
   }
 
@@ -66,7 +76,9 @@ export function Tooltip({
           <span
             id={id}
             role="tooltip"
-            className="pointer-events-none fixed z-50 w-max max-w-xs -translate-x-1/2 -translate-y-full rounded-lg border border-gray-200 bg-surface p-2.5 text-left text-xs font-normal leading-relaxed text-gray-700 shadow-lg"
+            className={`pointer-events-none fixed z-50 w-max max-w-xs rounded-lg border border-gray-200 bg-surface p-2.5 text-left text-xs font-normal leading-relaxed text-gray-700 shadow-lg ${
+              placement === "right" ? "-translate-y-1/2" : "-translate-x-1/2 -translate-y-full"
+            }`}
             style={{ top: pos.top, left: pos.left }}
           >
             {text}
