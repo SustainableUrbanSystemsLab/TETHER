@@ -39,7 +39,7 @@ test("@desktop the app runs a full match under the desktop CSP", async ({ page }
   }
   await expect(linking).toBeVisible();
   await page.getByRole("button", { name: "Run Matching" }).click();
-  await expect(page.getByText("Rows matched")).toBeVisible({ timeout: 150_000 });
+  await expect(page.getByText("Rows processed")).toBeVisible({ timeout: 150_000 });
 
   expect(await cspViolations(page)).toEqual([]);
   // The policy really was in force (a typo would make this test vacuous).

@@ -17,7 +17,7 @@ test("demo mode runs the sample pair, scores it, and leaves no trace", async ({ 
   await expect(page.getByText("5 columns linked")).toBeVisible();
 
   await page.getByRole("button", { name: "Run Matching" }).click();
-  await expect(page.getByText("Rows matched")).toBeVisible({ timeout: 150_000 });
+  await expect(page.getByText("Rows processed")).toBeVisible({ timeout: 150_000 });
   const key = page.locator("div", { has: page.getByText("Answer key (sample data only)") }).last();
   const text = await key.innerText();
   // Floors from matcher/analysis/benchmark_simulated.py: overall >= 0.85.
@@ -85,6 +85,6 @@ test("exiting the demo mid-run drops the run", async ({ page }) => {
   // The abandoned run must not take the page anywhere afterwards.
   await page.waitForTimeout(5_000);
   await expect(page.getByRole("link", { name: "Try it with sample data" })).toBeVisible();
-  await expect(page.getByText("Rows matched")).toHaveCount(0);
+  await expect(page.getByText("Rows processed")).toHaveCount(0);
   await expect(page.getByText("Matching failed")).toHaveCount(0);
 });

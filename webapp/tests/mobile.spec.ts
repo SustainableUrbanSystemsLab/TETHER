@@ -21,6 +21,6 @@ test("the Match page never scrolls sideways on a phone", async ({ page }) => {
   await expectNoSidewaysScroll(page);
 
   await page.getByRole("button", { name: "Run Matching" }).click();
-  await expect(page.getByText("Rows matched")).toBeVisible({ timeout: 150_000 });
+  await expect(page.getByText("Rows processed")).toBeVisible({ timeout: 150_000 });
   await expectNoSidewaysScroll(page);
 });

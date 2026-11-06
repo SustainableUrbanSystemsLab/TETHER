@@ -37,7 +37,7 @@ async function uploadAndLink(page: Page, target: string, supp: string): Promise<
 
 async function runMatch(page: Page): Promise<void> {
   await page.getByRole("button", { name: "Run Matching" }).click();
-  await expect(page.getByText("Rows matched")).toBeVisible({ timeout: 150_000 });
+  await expect(page.getByText("Rows processed")).toBeVisible({ timeout: 150_000 });
 }
 
 test.describe("no request leaves the origin", () => {
