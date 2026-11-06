@@ -63,8 +63,8 @@ export default defineConfig({
       registerType: "prompt",
       injectRegister: false,
       manifest: {
-        name: "NeighborhoodMatcher",
-        short_name: "NbhdMatch",
+        name: "TETHER",
+        short_name: "TETHER",
         description:
           "Match participant-level data to neighborhood-scale records, entirely in the browser.",
         start_url: "/",

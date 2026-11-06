@@ -1,8 +1,8 @@
 <p align="center">
-  <img src="webapp/public/logo.svg" alt="NeighborhoodMatcher logo" width="96" height="96" />
+  <img src="webapp/public/logo.svg" alt="TETHER logo" width="96" height="96" />
 </p>
 
-<h1 align="center">NeighborhoodMatcher</h1>
+<h1 align="center">TETHER</h1>
 
 <p align="center">
   Match participant-level data to neighborhood-scale records (ACS census
@@ -11,7 +11,7 @@
 </p>
 
 <p align="center">
-  <a href="https://nbhdmatch.netlify.app/"><strong>▶ Use it in your browser — nbhdmatch.netlify.app</strong></a>
+  <a href="https://tether-dev.netlify.app/"><strong>▶ Use it in your browser — tether-dev.netlify.app</strong></a>
   <br /><br />
   <strong>Offline desktop app:</strong>
   <br />
@@ -20,7 +20,7 @@
   <br />
   <sub>No developer certificate yet, so the first launch takes one extra click — see <a href="#installing-the-desktop-app">Installing the desktop app</a>.</sub>
   <br /><br />
-  <a href="https://github.com/SustainableUrbanSystemsLab/NeighborhoodMatcher"><img src="https://img.shields.io/badge/GitHub-NeighborhoodMatcher-181717?logo=github" alt="Source on GitHub" /></a>
+  <a href="https://github.com/SustainableUrbanSystemsLab/NeighborhoodMatcher"><img src="https://img.shields.io/badge/GitHub-TETHER-181717?logo=github" alt="Source on GitHub" /></a>
   <a href="https://github.com/SustainableUrbanSystemsLab/NeighborhoodMatcher/releases/latest"><img src="https://img.shields.io/github/v/release/SustainableUrbanSystemsLab/NeighborhoodMatcher?label=desktop%20app" alt="Latest desktop release" /></a>
   <a href="https://github.com/SustainableUrbanSystemsLab/NeighborhoodMatcher/actions/workflows/python-tests.yml"><img src="https://github.com/SustainableUrbanSystemsLab/NeighborhoodMatcher/actions/workflows/python-tests.yml/badge.svg" alt="Python tests" /></a>
   <a href="https://app.netlify.com/projects/nbhdmatch/deploys"><img src="https://api.netlify.com/api/v1/badges/f2fe942a-24a9-41d3-9ed6-29dac67da9b3/deploy-status" alt="Netlify Status" /></a>
@@ -48,7 +48,7 @@ inside an institution.
 
 ## Using it
 
-1. Open **[nbhdmatch.netlify.app](https://nbhdmatch.netlify.app/)** (or run locally, below).
+1. Open **[tether-dev.netlify.app](https://tether-dev.netlify.app/)** (or run locally, below).
 2. Upload a target CSV and a supplemental CSV. Columns with identical names
    are auto-linked; every linked column must be numeric and measure the same
    thing the same way in both files (see
@@ -62,8 +62,8 @@ inside an institution.
 | Situation | Use |
 |-----------|-----|
 | Online once, offline later | Open the site once; the footer shows *Available offline on this device* when the whole app is cached. Install it from the browser menu for an app icon. |
-| A computer that never goes online | The desktop app from the [latest release](https://github.com/SustainableUrbanSystemsLab/NeighborhoodMatcher/releases/latest): [`NeighborhoodMatcher-darwin-aarch64.dmg`](https://github.com/SustainableUrbanSystemsLab/NeighborhoodMatcher/releases/latest/download/NeighborhoodMatcher-darwin-aarch64.dmg) (macOS, Apple Silicon) or [`NeighborhoodMatcher-windows-x64-setup.exe`](https://github.com/SustainableUrbanSystemsLab/NeighborhoodMatcher/releases/latest/download/NeighborhoodMatcher-windows-x64-setup.exe) (Windows, WebView2 included). Neither carries a developer certificate, so each system asks once — see [Installing the desktop app](#installing-the-desktop-app). |
-| Host it inside an institution | Download *nbhdmatch-site-v&lt;version&gt;.zip* from the site's [About page](https://nbhdmatch.netlify.app/about#offline) and serve the folder from any static server (HOSTING.txt inside lists the two settings that matter). |
+| A computer that never goes online | The desktop app from the [latest release](https://github.com/SustainableUrbanSystemsLab/NeighborhoodMatcher/releases/latest): [macOS installer](https://github.com/SustainableUrbanSystemsLab/NeighborhoodMatcher/releases/latest/download/NeighborhoodMatcher-darwin-aarch64.dmg) (macOS, Apple Silicon) or [Windows installer](https://github.com/SustainableUrbanSystemsLab/NeighborhoodMatcher/releases/latest/download/NeighborhoodMatcher-windows-x64-setup.exe) (Windows, WebView2 included). Neither carries a developer certificate, so each system asks once — see [Installing the desktop app](#installing-the-desktop-app). |
+| Host it inside an institution | Download *nbhdmatch-site-v&lt;version&gt;.zip* from the site's [About page](https://tether-dev.netlify.app/about#offline) and serve the folder from any static server (HOSTING.txt inside lists the two settings that matter). |
 
 In every case the runtime, the engine and all assets are local: nothing is
 fetched from a CDN, and no data leaves the machine.
@@ -92,7 +92,7 @@ To try changes before they are released, the
 pre-release has the same files, rebuilt on every push to `main`.
 
 No data handy? Open the demo,
-**[nbhdmatch.netlify.app/match?demo](https://nbhdmatch.netlify.app/match?demo)**
+**[tether-dev.netlify.app/match?demo](https://tether-dev.netlify.app/match?demo)**
 (or *Try it with sample data* on the upload step, also in the desktop app).
 It loads the benchmark pair from this repo,
 [`simulated_data/dataset_A100.csv`](simulated_data/dataset_A100.csv) (target) ×
@@ -249,7 +249,7 @@ changes `matcher/src`, `webapp/src` or `webapp/public/matcher` without a bump.
 | Folder | What it is |
 |--------|------------|
 | [`matcher/`](matcher/) | The matcher: matching core, quality signals, missing-data-aware distances, explanatory-PDF pipeline, and the Pyodide-loadable `web_api` the frontend uses. Docs in [`matcher/docs/`](matcher/docs/). |
-| [`webapp/`](webapp/) | React + Vite webapp running the matcher in the browser via a pool of Pyodide workers, offline-capable. Deployed to [nbhdmatch.netlify.app](https://nbhdmatch.netlify.app/). `webapp/src-tauri/` wraps the same build as the desktop app. |
+| [`webapp/`](webapp/) | React + Vite webapp running the matcher in the browser via a pool of Pyodide workers, offline-capable. Deployed to [tether-dev.netlify.app](https://tether-dev.netlify.app/). `webapp/src-tauri/` wraps the same build as the desktop app. |
 | [`simulated_data/`](simulated_data/) | Benchmark: fake participants generated from real ACS 2010–2014 tracts with known ground truth. Drives the regression floors in CI. |
 
 <details>

@@ -526,7 +526,7 @@ export default function Match() {
         <div className="mb-2 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2.5" title="Back to the landing page">
             <img src="/logo.svg" alt="" className="h-8 w-8" />
-            <h1 className="text-2xl font-bold text-gray-900">Dataset Matcher</h1>
+            <h1 className="text-2xl font-bold text-gray-900">TETHER</h1>
           </Link>
           <div className="flex items-center gap-3">
             <ThemeToggle theme={theme} />

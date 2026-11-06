@@ -256,7 +256,7 @@ export function buildFeatureSmdCsv(output: MatchOutput): string {
   });
 }
 
-export const AGREEMENT_TEXT = `Dataset Matcher — Data Use Acknowledgments
+export const AGREEMENT_TEXT = `TETHER — Data Use Acknowledgments
 
 By generating this results package, the user confirmed:
 
@@ -323,7 +323,7 @@ export function buildRunInfoCsv(
   const p = output.provenance;
   const { summary } = output;
   const rows: [string, string | number][] = [
-    ["tool", p?.tool ?? "NeighborhoodMatcher"],
+    ["tool", p?.tool ?? "TETHER"],
     ["tool_version", p?.version ?? "unknown"],
     ["authors", (p?.authors ?? []).join("; ") || AUTHORS_LINE],
     ["organization", p?.organization ?? ORGANIZATION],
@@ -372,7 +372,7 @@ export function buildReadmeText(
 ): string {
   const p = output.provenance;
   const header = [
-    `${p?.tool ?? "NeighborhoodMatcher"} — Results Package`,
+    `${p?.tool ?? "TETHER"} — Results Package`,
     "",
     `Tool version:  ${p?.version ?? "unknown"} (matching engine)`,
     `Webapp build:  ${buildLabel()}`,

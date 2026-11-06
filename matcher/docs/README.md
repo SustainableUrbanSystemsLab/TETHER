@@ -1,4 +1,4 @@
-# Neighborhood Matcher — `matcher/` Documentation
+# TETHER — `matcher/` Documentation
 
 `matcher/` is the Python backend that links a target dataset to a supplemental
 dataset using standardized Euclidean distance and reports a set of match-quality

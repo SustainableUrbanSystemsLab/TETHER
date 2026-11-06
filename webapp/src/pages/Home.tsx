@@ -19,7 +19,7 @@ export default function Home() {
           className="mx-auto mb-4 h-16 w-16"
         />
         <h1 className="mb-2 text-4xl font-bold text-gray-900">
-          Dataset Matcher
+          TETHER
         </h1>
         <p className="mb-8 text-lg text-gray-500">
           Match and merge two CSV datasets using statistical similarity
@@ -65,17 +65,13 @@ export default function Home() {
 
         <div className="mt-6 rounded-lg bg-green-50 p-3">
           <p className="text-sm text-green-700">
-            Your data never leaves your browser. All matching is performed
-            client-side.
+            Your data stays on this device.
           </p>
         </div>
         <p className="mt-3 text-xs text-gray-500">
-          Works without Internet: after this visit the app keeps running
-          offline on this device, and it can be installed from the browser
-          menu. For a machine with no web access at all, or to host a copy
-          inside your institution, see{" "}
+          Works offline once cached.{" "}
           <Link to="/about#offline" className="text-blue-600 dark:text-blue-400 underline hover:text-blue-800">
-            Use it without Internet
+            Offline options
           </Link>
           .
         </p>

@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Builds NeighborhoodMatcher end to end: the website, the self-host zip, and
+// Builds TETHER end to end: the website, the self-host zip, and
 // the desktop app for this computer, collected in release/.
 //
 // This is the logic behind ./build.sh (macOS, Linux) and build.bat (Windows);
@@ -32,7 +32,7 @@ const IS_MAC = process.platform === "darwin";
 const IS_LINUX = process.platform === "linux";
 const WRAPPER = IS_WIN ? "build.bat" : "./build.sh";
 
-const HELP = `Build NeighborhoodMatcher: the website, the self-host zip, and the desktop
+const HELP = `Build TETHER: the website, the self-host zip, and the desktop
 app for this computer. Outputs go to release/, which is recreated on every run.
 
   ./build.sh [options]     macOS, Linux
@@ -47,8 +47,8 @@ Options:
 Outputs in release/:
   nbhdmatch-site-v<version>.zip                 the website for any static web
                                                 server (HOSTING.txt inside)
-  NeighborhoodMatcher_<version>_<arch>.dmg      desktop app, macOS
-  NeighborhoodMatcher_<version>_x64-setup.exe   desktop installer, Windows
+  TETHER_<version>_<arch>.dmg      desktop app, macOS
+  TETHER_<version>_x64-setup.exe   desktop installer, Windows
                                                 (WebView2 runtime included)
 
 Needs Node.js 20 or newer; the pinned pnpm is provided automatically (corepack
@@ -238,7 +238,7 @@ if (opts.test && !findTool("uv", [join(homedir(), ".local", "bin"), join(homedir
   fail("--test needs uv for the Python tests: https://docs.astral.sh/uv/getting-started/installation/");
 }
 
-console.log(`NeighborhoodMatcher ${VERSION} on ${process.platform}/${process.arch}`);
+console.log(`TETHER ${VERSION} on ${process.platform}/${process.arch}`);
 console.log(`Node.js ${process.version}; pnpm ${PNPM_VERSION} (${pnpmSource})`);
 if (buildDesktop) console.log(`Rust: ${capture("cargo", ["--version"])}`);
 if (!buildDesktop) {
@@ -407,7 +407,7 @@ if (buildDesktop && opts.test) {
 if (buildDesktop && opts.test && IS_MAC) {
   step("Testing the Terminal installer");
   const dir = mkdtempSync(join(tmpdir(), "nbhdmatch-install-"));
-  const dmg = join(dir, "NeighborhoodMatcher.dmg");
+  const dmg = join(dir, "TETHER.dmg");
   copyFileSync(installer, dmg);
   run("xattr", ["-w", "com.apple.quarantine", "0083;00000000;Chrome;", dmg]);
   const installDir = join(dir, "Applications");
@@ -416,7 +416,7 @@ if (buildDesktop && opts.test && IS_MAC) {
     NBHDMATCH_INSTALL_DIR: installDir,
     NBHDMATCH_NO_OPEN: "1",
   });
-  const app = join(installDir, "NeighborhoodMatcher.app");
+  const app = join(installDir, "TETHER.app");
   if (!existsSync(join(app, "Contents", "Info.plist"))) fail("the installer did not put the app in NBHDMATCH_INSTALL_DIR");
   if (spawnSync("xattr", ["-p", "com.apple.quarantine", app], { stdio: "ignore" }).status === 0) {
     fail("the installed app still carries the quarantine flag");

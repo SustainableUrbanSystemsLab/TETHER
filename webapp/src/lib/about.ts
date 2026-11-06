@@ -6,14 +6,14 @@
 // (MatchOutput.provenance): it reports the ENGINE version that actually did
 // the matching, which is what a reader of the report needs.
 
-export const TOOL_NAME = "NeighborhoodMatcher";
+export const TOOL_NAME = "TETHER";
 /** Engine version this build ships (mirrors matcher/about.py VERSION). */
 export const MATCHER_VERSION = "0.10.1";
 export const AUTHORS = ["Dr. Benson Ku", "Dr. Patrick Kastner"] as const;
 export const ORGANIZATION = "Emory University and Georgia Institute of Technology";
 export const REPO_URL =
   "https://github.com/SustainableUrbanSystemsLab/NeighborhoodMatcher";
-export const SITE_URL = "https://nbhdmatch.netlify.app/";
+export const SITE_URL = "https://tether-dev.netlify.app/";
 export const ORGANIZATION_URL = "https://sustainableurbansystems.com/";
 /** Mirrors matcher/about.py AUTHOR_URLS — one entry per AUTHORS name that has a public profile. */
 export const AUTHOR_URLS: Partial<Record<(typeof AUTHORS)[number], string>> = {

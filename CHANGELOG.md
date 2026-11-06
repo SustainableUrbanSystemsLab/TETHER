@@ -1,6 +1,6 @@
 # Changelog
 
-All notable changes to NeighborhoodMatcher. The format follows
+All notable changes to TETHER. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses
 [Semantic Versioning](https://semver.org/): every change that ships bumps the
 version (`python scripts/bump_version.py patch|minor|major`), and CI refuses a

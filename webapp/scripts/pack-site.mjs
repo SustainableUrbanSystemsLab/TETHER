@@ -16,7 +16,7 @@ const outDir = resolve(dist, "offline");
 const { version } = JSON.parse(readFileSync(resolve(appRoot, "package.json"), "utf-8"));
 const zipName = `nbhdmatch-site-v${version}.zip`;
 
-const HOSTING = `NeighborhoodMatcher v${version} — self-hosted copy
+const HOSTING = `TETHER v${version} — self-hosted copy
 ==================================================
 
 This folder is the complete web app. Nothing in it contacts the Internet:

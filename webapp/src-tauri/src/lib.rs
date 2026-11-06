@@ -1,4 +1,4 @@
-// NeighborhoodMatcher desktop app: the built webapp served from inside the
+// TETHER desktop app: the built webapp served from inside the
 // binary. Everything the page needs (Pyodide runtime, numpy wheel, matcher
 // sources) ships in the bundle, so the app never touches the network.
 

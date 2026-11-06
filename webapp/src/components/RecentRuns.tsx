@@ -104,10 +104,7 @@ export function RecentRuns({
         <div>
           <h3 className="font-medium text-gray-800">Reopen a previous run</h3>
           <p className="mt-0.5 max-w-xl text-xs text-gray-500">
-            Load a results zip you downloaded earlier. It carries your original
-            files and the settings used, and matching is deterministic — so the
-            run is reproduced exactly, charts included. Nothing was kept in this
-            browser to make that work.
+            Load a results ZIP to restore your files and settings.
           </p>
         </div>
         <button

@@ -1,4 +1,4 @@
-# Neighborhood Matcher — Match Quality Development Update
+# TETHER — Match Quality Development Update
 
 **Audience:** Project manager / future end user | **Stats background assumed**
 **Estimated read time:** 5–10 minutes

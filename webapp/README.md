@@ -1,4 +1,4 @@
-# Dataset Matcher (webapp)
+# TETHER (webapp)
 
 Client-side webapp for matching and merging two CSV datasets using
 standardized Euclidean distance. Built for researchers who need to enrich a
@@ -114,7 +114,7 @@ after `pnpm desktop:build`, e.g. on macOS:
 
 ```bash
 NBHDMATCH_SELFTEST=/tmp/selftest.txt NBHDMATCH_DOWNLOAD_DIR=/tmp \
-  src-tauri/target/release/bundle/macos/NeighborhoodMatcher.app/Contents/MacOS/neighborhood-matcher
+  src-tauri/target/release/bundle/macos/TETHER.app/Contents/MacOS/neighborhood-matcher
 cat /tmp/selftest.txt
 ```
 

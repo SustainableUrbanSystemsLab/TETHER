@@ -1,5 +1,5 @@
 @echo off
-rem Builds NeighborhoodMatcher: the website, the self-host zip, and the desktop
+rem Builds TETHER: the website, the self-host zip, and the desktop
 rem app installer for this computer (Windows: NSIS setup.exe with WebView2),
 rem all collected in release\.
 rem

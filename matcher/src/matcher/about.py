@@ -12,12 +12,12 @@ whatever the page was built with.
 
 from datetime import datetime, timezone
 
-TOOL_NAME = "NeighborhoodMatcher"
+TOOL_NAME = "TETHER"
 VERSION = "0.10.1"
 AUTHORS = ("Dr. Benson Ku", "Dr. Patrick Kastner")
 ORGANIZATION = "Emory University and Georgia Institute of Technology"
 REPO_URL = "https://github.com/SustainableUrbanSystemsLab/NeighborhoodMatcher"
-SITE_URL = "https://nbhdmatch.netlify.app/"
+SITE_URL = "https://tether-dev.netlify.app/"
 ORGANIZATION_URL = "https://sustainableurbansystems.com/"
 # One entry per AUTHORS name that has a public profile to link to; an author
 # with no entry is credited by name only. Keyed by the exact AUTHORS string

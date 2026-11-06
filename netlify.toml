@@ -1,4 +1,4 @@
-# Netlify deployment for the Dataset Matcher webapp (webapp/).
+# Netlify deployment for the TETHER webapp (webapp/).
 # The build runs sync-assets (prebuild), which copies the Python matcher
 # sources and explanatory PDFs from matcher/ into webapp/public/, so the
 # deploy always ships the same matcher code the tests cover.

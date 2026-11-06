@@ -1,5 +1,5 @@
 #!/bin/sh
-# Builds NeighborhoodMatcher: the website, the self-host zip, and the desktop
+# Builds TETHER: the website, the self-host zip, and the desktop
 # app for this computer (macOS: .dmg), all collected in release/.
 #
 #   ./build.sh              everything

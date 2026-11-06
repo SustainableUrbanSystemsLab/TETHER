@@ -1,5 +1,5 @@
 #!/bin/sh
-# Installs NeighborhoodMatcher on a Mac without the "Apple could not verify"
+# Installs TETHER on a Mac without the "Apple could not verify"
 # block. macOS vets an app on its first launch only when the file carries the
 # quarantine flag that browsers put on downloads; curl sets no such flag, so an
 # app installed this way opens like any other. One line, from Terminal:
@@ -18,7 +18,7 @@
 set -eu
 
 RELEASE_DMG="https://github.com/SustainableUrbanSystemsLab/NeighborhoodMatcher/releases/latest/download/NeighborhoodMatcher-darwin-aarch64.dmg"
-APP="NeighborhoodMatcher.app"
+APP="TETHER.app"
 
 say() { printf '%s\n' "$*"; }
 die() { printf 'error: %s\n' "$*" >&2; exit 1; }
@@ -26,7 +26,7 @@ die() { printf 'error: %s\n' "$*" >&2; exit 1; }
 [ "$(uname -s)" = Darwin ] || die "this installer is for macOS. Windows: NeighborhoodMatcher-windows-x64-setup.exe from the same release."
 # hw.optional.arm64 is 1 on Apple Silicon even in a Rosetta terminal, where uname -m says x86_64.
 [ "$(sysctl -n hw.optional.arm64 2>/dev/null || echo 0)" = 1 ] ||
-  die "the desktop app is built for Apple Silicon (M1 or later); this Mac is $(uname -m). The website runs on any Mac: https://nbhdmatch.netlify.app/"
+  die "the desktop app is built for Apple Silicon (M1 or later); this Mac is $(uname -m). The website runs on any Mac: https://tether-dev.netlify.app/"
 
 work=$(mktemp -d "${TMPDIR:-/tmp}/nbhdmatch-install.XXXXXX")
 mount=""
@@ -41,7 +41,7 @@ trap cleanup EXIT INT TERM
 dmg="${NBHDMATCH_DMG:-}"
 if [ -z "$dmg" ]; then
   dmg="$work/NeighborhoodMatcher.dmg"
-  say "Downloading the latest NeighborhoodMatcher release..."
+  say "Downloading the latest TETHER release..."
   curl -fL --progress-bar -o "$dmg" "$RELEASE_DMG" || die "download failed: $RELEASE_DMG"
 elif [ ! -f "$dmg" ]; then
   die "no such file: $dmg"
@@ -60,12 +60,12 @@ mkdir -p "$dest"
 target="$dest/$APP"
 
 if pgrep -qf "/$APP/Contents/MacOS/" 2>/dev/null; then
-  die "NeighborhoodMatcher is running. Quit it, then run this installer again."
+  die "TETHER is running. Quit it, then run this installer again."
 fi
 
 if [ -e "$target" ]; then
   old=$(/usr/libexec/PlistBuddy -c 'Print CFBundleShortVersionString' "$target/Contents/Info.plist" 2>/dev/null || echo "?")
-  say "Replacing NeighborhoodMatcher $old in $dest..."
+  say "Replacing TETHER $old in $dest..."
   rm -rf "$target"
 else
   say "Installing into $dest..."
@@ -78,7 +78,7 @@ codesign --verify --deep --strict "$target" 2>/dev/null ||
   die "the installed app failed its signature check. Delete $target and run this installer again."
 
 version=$(/usr/libexec/PlistBuddy -c 'Print CFBundleShortVersionString' "$target/Contents/Info.plist" 2>/dev/null || echo "?")
-say "Installed NeighborhoodMatcher $version: $target"
+say "Installed TETHER $version: $target"
 if [ "${NBHDMATCH_NO_OPEN:-0}" != 1 ]; then
   say "Opening it. Next time, open it from the Applications folder or Launchpad."
   open "$target"

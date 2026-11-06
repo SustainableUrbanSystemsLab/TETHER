@@ -263,7 +263,7 @@ export default function About() {
           className="mb-6 scroll-mt-4 rounded-lg border border-gray-200 bg-surface p-5"
         >
           <h2 className="mb-1 text-lg font-semibold text-gray-900">
-            Use it without Internet
+            Offline options
           </h2>
           <p className="mb-3 text-sm text-gray-500">
             Nothing here needs a connection except the first visit: the
