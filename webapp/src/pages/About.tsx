@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useId, useState } from "react";
 import { Link, useLocation } from "react-router";
 import { ScenarioExplainer, type ScenarioData } from "@/components/ScenarioExplainer";
 import { STEP_VISUALS } from "@/components/AlgorithmSteps";
@@ -21,6 +21,31 @@ import { useTheme } from "@/lib/use-theme";
 import scenariosJson from "@/data/scenarios.json";
 
 const SCENARIOS = scenariosJson as unknown as ScenarioData[];
+
+function AcronymTooltip({ label, explanation }: { label: string; explanation: string }) {
+  const id = useId();
+  const [open, setOpen] = useState(false);
+  return (
+    <span className="relative inline-block" onMouseEnter={() => setOpen(true)} onMouseLeave={() => setOpen(false)}>
+      <button
+        type="button"
+        aria-describedby={open ? id : undefined}
+        className="cursor-help underline decoration-dotted underline-offset-2 focus-visible:rounded focus-visible:outline-2 focus-visible:outline-blue-600"
+        onFocus={() => setOpen(true)}
+        onBlur={() => setOpen(false)}
+        onClick={() => setOpen(true)}
+        onKeyDown={(event) => { if (event.key === "Escape") setOpen(false); }}
+      >
+        {label}
+      </button>
+      {open && (
+        <span id={id} role="tooltip" className="absolute bottom-full left-1/2 z-10 mb-2 w-56 -translate-x-1/2 rounded-lg border border-gray-200 bg-surface p-3 text-left text-xs font-normal leading-relaxed text-gray-700 shadow-lg">
+          {explanation}
+        </span>
+      )}
+    </span>
+  );
+}
 
 const ALGORITHM_STEPS: Array<{ title: string; body: React.ReactNode }> = [
   {
@@ -68,8 +93,13 @@ const ALGORITHM_STEPS: Array<{ title: string; body: React.ReactNode }> = [
     title: "Report quality signals.",
     body: (
       <>
-        Confidence tier, NNDR, MNN, near misses, ties, per-feature
-        contribution and SMD, all explained below.
+        Confidence tier,{" "}
+        <AcronymTooltip label="NNDR" explanation="Nearest Neighbor Distance Ratio: the closest distance divided by the second-closest. Lower values indicate a clearer winner." />
+        ,{" "}
+        <AcronymTooltip label="MNN" explanation="Mutual Nearest Neighbor: the two rows are each other’s closest match." />
+        , near misses, ties, per-feature contribution and{" "}
+        <AcronymTooltip label="SMD" explanation="Standardized Mean Difference: the difference in means relative to their spread. Values closer to zero indicate better dataset balance." />
+        , all explained below.
       </>
     ),
   },
