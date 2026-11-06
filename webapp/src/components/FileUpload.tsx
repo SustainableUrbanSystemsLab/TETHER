@@ -8,7 +8,20 @@ interface FileUploadProps {
   onFileLoaded: (dataset: ParsedDataset) => void;
   onClear: () => void;
   dataset: ParsedDataset | null;
+  /** light background tint for the empty-state box, so the two upload slots read apart at a glance */
+  accent?: "blue" | "purple";
 }
+
+const ACCENT_CLASSES = {
+  blue: {
+    idle: "border-blue-200 bg-blue-50/60 hover:border-blue-300 hover:bg-blue-50",
+    dragOver: "border-blue-400 bg-blue-50",
+  },
+  purple: {
+    idle: "border-purple-200 bg-purple-50/60 hover:border-purple-300 hover:bg-purple-50",
+    dragOver: "border-purple-400 bg-purple-50",
+  },
+} as const;
 
 function labelPreview(row: string[]): string {
   const cells = row.map((c) => c.trim()).filter(Boolean).slice(0, 3);
@@ -22,6 +35,7 @@ export function FileUpload({
   onFileLoaded,
   onClear,
   dataset,
+  accent = "blue",
 }: FileUploadProps) {
   const [dragOver, setDragOver] = useState(false);
   const [columnsExpanded, setColumnsExpanded] = useState(false);
@@ -138,9 +152,7 @@ export function FileUpload({
         onDrop={onDrop}
         onClick={() => inputRef.current?.click()}
         className={`cursor-pointer rounded-xl border-2 border-dashed p-8 text-center transition-colors ${
-          dragOver
-            ? "border-blue-400 bg-blue-50"
-            : "border-gray-300 hover:border-gray-400 hover:bg-gray-50"
+          dragOver ? ACCENT_CLASSES[accent].dragOver : ACCENT_CLASSES[accent].idle
         }`}
       >
         <h3 className="mb-1 font-semibold text-gray-900">{label}</h3>

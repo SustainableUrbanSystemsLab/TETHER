@@ -4,31 +4,49 @@
 // answers "is one of my matching variables making the linkage WORSE?" —
 // quality over quantity.
 
-import type { AblationState, AblationVariable, VariableReportRow } from "@/types";
+import { useState } from "react";
+import type {
+  AblationState,
+  AblationVariable,
+  ColumnLink,
+  ParsedDataset,
+  VariableReportRow,
+} from "@/types";
 import {
   ablationFootnote,
   removalSentence,
   verdictChipClasses,
   verdictLabel,
 } from "@/lib/variable-text";
+import { DataPreviewModal } from "@/components/DataPreviewModal";
 
 interface VariableDiagnosticsPanelProps {
   variables: VariableReportRow[];
   ablation: AblationState;
+  target: ParsedDataset;
+  supplemental: ParsedDataset;
+  links: ColumnLink[];
   /** flips the link's exclude toggle and returns to the Link step */
   onExcludeFeature: (featureName: string) => void;
   /** starts the (gated) variable check on demand */
   onRunAblation: () => void;
 }
 
-function missingCell(pct: number) {
+function missingCell(pct: number, onClick?: () => void) {
   const cls =
     pct > 50
       ? "text-red-700 font-medium"
       : pct > 20
         ? "text-amber-700 font-medium"
         : "text-gray-600";
-  return <span className={cls}>{pct.toFixed(0)}%</span>;
+  if (!onClick || pct === 0) {
+    return <span className={cls}>{pct.toFixed(0)}%</span>;
+  }
+  return (
+    <button onClick={onClick} className={`underline-offset-2 hover:underline ${cls}`}>
+      {pct.toFixed(0)}%
+    </button>
+  );
 }
 
 function offsetSmdCell(row: VariableReportRow) {
@@ -77,10 +95,19 @@ function AblationCell({
 export function VariableDiagnosticsPanel({
   variables,
   ablation,
+  target,
+  supplemental,
+  links,
   onExcludeFeature,
   onRunAblation,
 }: VariableDiagnosticsPanelProps) {
+  const [preview, setPreview] = useState<
+    { side: "target" | "supplemental"; colIndex: number } | null
+  >(null);
+
   if (variables.length === 0) return null;
+
+  const linkByFeature = new Map(links.map((l) => [l.headerName, l]));
 
   const ablationByFeature = new Map<string, AblationVariable>(
     ablation.status === "done"
@@ -167,9 +194,28 @@ export function VariableDiagnosticsPanel({
                     {row.feature}
                   </td>
                   <td className="py-2 pr-3">
-                    {missingCell(row.target_missing_pct)}
+                    {missingCell(
+                      row.target_missing_pct,
+                      linkByFeature.has(row.feature)
+                        ? () =>
+                            setPreview({
+                              side: "target",
+                              colIndex: linkByFeature.get(row.feature)!.targetIndex,
+                            })
+                        : undefined
+                    )}
                     <span className="text-gray-400"> / </span>
-                    {missingCell(row.supp_missing_pct)}
+                    {missingCell(
+                      row.supp_missing_pct,
+                      linkByFeature.has(row.feature)
+                        ? () =>
+                            setPreview({
+                              side: "supplemental",
+                              colIndex: linkByFeature.get(row.feature)!
+                                .supplementalIndex,
+                            })
+                        : undefined
+                    )}
                   </td>
                   <td className="py-2 pr-3">{offsetSmdCell(row)}</td>
                   <td className="py-2 pr-3 text-gray-600">
@@ -215,6 +261,20 @@ export function VariableDiagnosticsPanel({
         <p className="mt-2 text-[11px] text-red-600">
           Variable check failed: {ablation.message}
         </p>
+      )}
+
+      {preview && (
+        <DataPreviewModal
+          title={`${preview.side === "target" ? target.fileName : supplemental.fileName} — ${
+            (preview.side === "target" ? target : supplemental).headers[
+              preview.colIndex
+            ]
+          }`}
+          headers={(preview.side === "target" ? target : supplemental).headers}
+          rows={(preview.side === "target" ? target : supplemental).rows}
+          highlightColIndex={preview.colIndex}
+          onClose={() => setPreview(null)}
+        />
       )}
     </details>
   );

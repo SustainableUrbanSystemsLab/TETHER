@@ -1,9 +1,16 @@
 import { useMemo, useState } from "react";
 import { columnMissingStats, type ColumnMissingStats } from "@/lib/missing";
 import { blockedSentence, type IdentifierVerdict } from "@/lib/identifier-guard";
+import { DataPreviewModal } from "@/components/DataPreviewModal";
 import type { ColumnLink, ParsedDataset, PIIWarning } from "@/types";
 
-function MissingBadge({ stats }: { stats: ColumnMissingStats }) {
+function MissingBadge({
+  stats,
+  onClick,
+}: {
+  stats: ColumnMissingStats;
+  onClick: () => void;
+}) {
   if (stats.missing === 0) return null;
   const pct = stats.total ? (stats.missing / stats.total) * 100 : 0;
   const cls =
@@ -13,12 +20,13 @@ function MissingBadge({ stats }: { stats: ColumnMissingStats }) {
         ? "bg-amber-100 text-amber-700"
         : "bg-gray-100 text-gray-500";
   return (
-    <span
-      className={`rounded px-1.5 py-0.5 text-[11px] ${cls}`}
-      title="Missing cells never match on this variable; the distance uses the missing-data penalty for them instead."
+    <button
+      onClick={onClick}
+      className={`rounded px-1.5 py-0.5 text-[11px] underline-offset-2 hover:underline ${cls}`}
+      title="Missing cells never match on this variable; the distance uses the missing-data penalty for them instead. Click to see which rows."
     >
       {stats.missing} missing ({pct.toFixed(0)}%)
-    </span>
+    </button>
   );
 }
 
@@ -44,6 +52,9 @@ export function ColumnLinker({
 }: ColumnLinkerProps) {
   const [manualTarget, setManualTarget] = useState<string>("");
   const [manualSupplemental, setManualSupplemental] = useState<string>("");
+  const [preview, setPreview] = useState<
+    { side: "target" | "supplemental"; colIndex: number } | null
+  >(null);
 
   // Per-column missing counts + sentinel scan, one pass per dataset —
   // surfaced here so missingness is visible BEFORE the run, not only in
@@ -242,13 +253,26 @@ export function ColumnLinker({
                     </span>
                   )}
                   {targetStats[link.targetIndex] && (
-                    <MissingBadge stats={targetStats[link.targetIndex]!} />
+                    <MissingBadge
+                      stats={targetStats[link.targetIndex]!}
+                      onClick={() =>
+                        setPreview({ side: "target", colIndex: link.targetIndex })
+                      }
+                    />
                   )}
                 </div>
                 <div className="col-span-4 flex flex-wrap items-center gap-2 text-sm text-gray-600">
                   <span>{supplemental.headers[link.supplementalIndex]}</span>
                   {suppStats[link.supplementalIndex] && (
-                    <MissingBadge stats={suppStats[link.supplementalIndex]!} />
+                    <MissingBadge
+                      stats={suppStats[link.supplementalIndex]!}
+                      onClick={() =>
+                        setPreview({
+                          side: "supplemental",
+                          colIndex: link.supplementalIndex,
+                        })
+                      }
+                    />
                   )}
                 </div>
                 <div className="col-span-2 text-center">
@@ -391,6 +415,20 @@ export function ColumnLinker({
           </span>
         )}
       </div>
+
+      {preview && (
+        <DataPreviewModal
+          title={`${preview.side === "target" ? target.fileName : supplemental.fileName} — ${
+            (preview.side === "target" ? target : supplemental).headers[
+              preview.colIndex
+            ]
+          }`}
+          headers={(preview.side === "target" ? target : supplemental).headers}
+          rows={(preview.side === "target" ? target : supplemental).rows}
+          highlightColIndex={preview.colIndex}
+          onClose={() => setPreview(null)}
+        />
+      )}
     </div>
   );
 }

@@ -273,6 +273,9 @@ export function ResultsView({
       <VariableDiagnosticsPanel
         variables={output.variables ?? []}
         ablation={ablation}
+        target={target}
+        supplemental={supplemental}
+        links={links}
         onExcludeFeature={onExcludeFeature}
         onRunAblation={onRunAblation}
       />

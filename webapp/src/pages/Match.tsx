@@ -553,6 +553,7 @@ export default function Match() {
                 <FileUpload
                   label="Target Dataset"
                   description="The dataset you want to add information to"
+                  accent="blue"
                   onFileLoaded={(d) => {
                     leaveDemo();
                     setTarget(d);
@@ -566,6 +567,7 @@ export default function Match() {
                 <FileUpload
                   label="Supplemental Dataset"
                   description="The dataset with information to add"
+                  accent="purple"
                   onFileLoaded={(d) => {
                     leaveDemo();
                     setSupplemental(d);
