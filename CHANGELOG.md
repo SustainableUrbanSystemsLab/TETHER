@@ -6,6 +6,12 @@ All notable changes to TETHER. The format follows
 version (`python scripts/bump_version.py patch|minor|major`), and CI refuses a
 pull request that changes shipped code without one.
 
+## [1.0.4] - 2026-11-06
+
+### Fixed
+
+- The simulated benchmark (`matcher/analysis/benchmark_simulated.py`, run by CI through `tests/test_simulated_benchmark.py`) read `tract_geoid` from the linked output to score accuracy, so it crashed with `KeyError` once 1.0.0 stripped geographic identifiers from the output. It now scores from the engine's in-memory match index, the same way the webapp demo's answer key does; the linked output stays identifier-free. Scores are unchanged (A100: 95% overall, 80% of wrong matches flagged).
+
 ## [1.0.3] - 2026-11-06
 
 ### Fixed

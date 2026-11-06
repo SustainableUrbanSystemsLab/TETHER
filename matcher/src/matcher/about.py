@@ -13,7 +13,7 @@ whatever the page was built with.
 from datetime import datetime, timezone
 
 TOOL_NAME = "TETHER"
-VERSION = "1.0.3"
+VERSION = "1.0.4"
 AUTHORS = ("Dr. Benson Ku", "Dr. Patrick Kastner")
 ORGANIZATION = "Emory University and Georgia Institute of Technology"
 REPO_URL = "https://github.com/SustainableUrbanSystemsLab/TETHER"

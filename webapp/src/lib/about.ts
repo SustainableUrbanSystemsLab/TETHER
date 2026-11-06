@@ -8,7 +8,7 @@
 
 export const TOOL_NAME = "TETHER";
 /** Engine version this build ships (mirrors matcher/about.py VERSION). */
-export const MATCHER_VERSION = "1.0.3";
+export const MATCHER_VERSION = "1.0.4";
 export const AUTHORS = ["Dr. Benson Ku", "Dr. Patrick Kastner"] as const;
 export const ORGANIZATION = "Emory University and Georgia Institute of Technology";
 export const REPO_URL =

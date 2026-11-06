@@ -28,6 +28,7 @@ import time
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
 
 from matcher.pipeline import coordinator  # noqa: E402
+from matcher.web_api import coordinate_in_memory  # noqa: E402
 
 
 def _read_rows(path):
@@ -57,6 +58,21 @@ def run_benchmark(data_dir, size="A100", output_dir=None):
     truth = {r["participant_id"]: r["true_tract_geoid"] for r in _read_rows(truth_path)}
     linked = _read_rows(output)
 
+    # The linked output carries no geographic identifier (tract_geoid is
+    # stripped), so score which tract each row linked to from the engine's
+    # match index instead — the same way the webapp's demo answer key does.
+    def _text(path):
+        with open(path, encoding="utf-8-sig") as f:
+            return f.read()
+
+    in_memory = coordinate_in_memory(_text(target), _text(supplemental))
+    supp_geoids = [r["tract_geoid"] for r in _read_rows(supplemental)]
+    linked_geoid = [
+        "" if t["match_idx"] is None else supp_geoids[t["match_idx"]]
+        for t in sorted(in_memory["per_target"], key=lambda t: t["target_idx"])
+    ]
+    assert len(linked_geoid) == len(linked), "engines disagree on the row count"
+
     per_scenario = {}
     totals = {
         "n": 0, "correct": 0, "wrong": 0, "wrong_flagged": 0,
@@ -64,10 +80,10 @@ def run_benchmark(data_dir, size="A100", output_dir=None):
         "runtime_s": runtime, "warnings": len(warnings),
         "output": output,
     }
-    for row in linked:
+    for row, geoid in zip(linked, linked_geoid):
         pid = row["participant_id"]
         scenario = row["scenario"]
-        correct = row["tract_geoid"] == truth[pid]
+        correct = geoid == truth[pid]
         flagged = bool(row["flags"])
         no_match = row["flags"].startswith("WARNING: no valid match")
 

@@ -74,8 +74,9 @@ export async function loadDemo(): Promise<DemoData> {
 }
 
 /** Scores the engine's nearest row for every participant against the
- *  tract it was generated from (tract_geoid passes through the run; it is
- *  never a matching variable). Null when the columns are not there. */
+ *  tract it was generated from, read from the in-memory supplemental rows
+ *  (tract_geoid never reaches the linked output). Null when the columns are
+ *  not there. */
 export function scoreAgainstAnswerKey(
   output: MatchOutput,
   demo: DemoData
