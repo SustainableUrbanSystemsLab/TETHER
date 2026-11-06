@@ -46,7 +46,7 @@ export function DataPreviewModal({
       onClick={onClose}
     >
       <div
-        className="flex max-h-[90vh] w-full max-w-5xl flex-col overflow-hidden rounded-lg bg-surface shadow-xl"
+        className="flex max-h-[90vh] w-fit max-w-[95vw] flex-col overflow-hidden rounded-lg bg-surface shadow-xl"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between border-b border-gray-200 px-4 py-3">
