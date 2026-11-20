@@ -176,6 +176,14 @@
   --color-amber-800: #eac55f;
   --color-amber-900: #fbe090;
 
+  /* Done (Primer dimmed purple scale), only the shades the second upload
+     slot's tint uses; same roles as the blue slot beside it. Without these
+     it kept Tailwind's near-white lavender under light text. */
+  --color-purple-50: #33334b; /* bgColor-done-muted over the canvas */
+  --color-purple-200: #514477; /* borderColor-done-muted over the canvas */
+  --color-purple-300: #dcbdfb; /* hover border, as blue-300 */
+  --color-purple-400: #c69cf4; /* drag-over border, as blue-400 */
+
   /* Charts: scaffolding recedes to the border tokens, marks keep meaning. */
   --chart-grid: #3d444db3; /* borderColor-muted */
   --chart-rule: #3d444d;

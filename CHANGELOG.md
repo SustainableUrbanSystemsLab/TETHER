@@ -6,6 +6,12 @@ All notable changes to TETHER. The format follows
 version (`python scripts/bump_version.py patch|minor|major`), and CI refuses a
 pull request that changes shipped code without one.
 
+## [1.0.5] - 2026-11-19
+
+### Fixed
+
+- In dark mode the Supplemental Dataset upload box was unreadable: its `purple` tint was the one palette the dark theme never remapped, so it stayed Tailwind's near-white lavender under light text. `main.css` now remaps the four purple shades the box uses (50, 200, 300, 400) to Primer's dark dimmed "done" scale, in the same roles as the blue Target Dataset box beside it. Heading text is now 9.2:1 on the tint and muted text 5.9:1 (5.4:1 on hover). Light mode is unchanged.
+
 ## [1.0.4] - 2026-11-06
 
 ### Fixed
