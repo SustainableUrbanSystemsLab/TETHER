@@ -6,6 +6,12 @@ All notable changes to TETHER. The format follows
 version (`python scripts/bump_version.py patch|minor|major`), and CI refuses a
 pull request that changes shipped code without one.
 
+## [1.0.6] - 2026-11-24
+
+### Changed
+
+- Tristin Shestag is now credited as an author, between Dr. Benson Ku and Dr. Patrick Kastner, in the site footer and run provenance.
+
 ## [1.0.5] - 2026-11-19
 
 ### Fixed

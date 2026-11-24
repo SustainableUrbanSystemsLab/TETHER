@@ -8,8 +8,8 @@
 
 export const TOOL_NAME = "TETHER";
 /** Engine version this build ships (mirrors matcher/about.py VERSION). */
-export const MATCHER_VERSION = "1.0.5";
-export const AUTHORS = ["Dr. Benson Ku", "Dr. Patrick Kastner"] as const;
+export const MATCHER_VERSION = "1.0.6";
+export const AUTHORS = ["Dr. Benson Ku", "Tristin Shestag", "Dr. Patrick Kastner"] as const;
 export const ORGANIZATION = "Emory University and Georgia Institute of Technology";
 export const REPO_URL =
   "https://github.com/SustainableUrbanSystemsLab/TETHER";
