@@ -8,7 +8,7 @@
 
 export const TOOL_NAME = "TETHER";
 /** Engine version this build ships (mirrors matcher/about.py VERSION). */
-export const MATCHER_VERSION = "1.0.6";
+export const MATCHER_VERSION = "1.0.7";
 export const AUTHORS = ["Dr. Benson Ku", "Tristin Shestag", "Dr. Patrick Kastner"] as const;
 export const ORGANIZATION = "Emory University and Georgia Institute of Technology";
 export const REPO_URL =
@@ -24,13 +24,16 @@ export const AUTHOR_URLS: Partial<Record<(typeof AUTHORS)[number], string>> = {
   "Dr. Patrick Kastner": "https://sustainableurbansystems.com/",
 };
 
+// Widened so the length checks below type-check for any number of authors.
+const names: readonly string[] = AUTHORS;
+
 /** Authors as one display string: "A and B" / "A, B, and C". */
 export const AUTHORS_LINE =
-  AUTHORS.length === 2
-    ? `${AUTHORS[0]} and ${AUTHORS[1]}`
-    : AUTHORS.length < 2
-      ? AUTHORS.join("")
-      : `${AUTHORS.slice(0, -1).join(", ")}, and ${AUTHORS[AUTHORS.length - 1]}`;
+  names.length === 2
+    ? `${names[0]} and ${names[1]}`
+    : names.length < 2
+      ? names.join("")
+      : `${names.slice(0, -1).join(", ")}, and ${names[names.length - 1]}`;
 
 /** The deployed build (see vite.config.ts `define`). */
 export const BUILD = {
