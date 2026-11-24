@@ -6,6 +6,12 @@ All notable changes to TETHER. The format follows
 version (`python scripts/bump_version.py patch|minor|major`), and CI refuses a
 pull request that changes shipped code without one.
 
+## [1.0.7] - 2026-11-24
+
+### Fixed
+
+- The webapp build failed after 1.0.6: with three authors, the `AUTHORS.length === 2` check in `about.ts` no longer type-checked.
+
 ## [1.0.6] - 2026-11-24
 
 ### Changed
