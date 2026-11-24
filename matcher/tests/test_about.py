@@ -26,8 +26,8 @@ TS_ABOUT = REPO_ROOT / "webapp" / "src" / "lib" / "about.ts"
 
 
 def test_authors_are_the_project_authors():
-    assert about.AUTHORS == ("Dr. Benson Ku", "Dr. Patrick Kastner")
-    assert about.authors_line() == "Dr. Benson Ku and Dr. Patrick Kastner"
+    assert about.AUTHORS == ("Dr. Benson Ku", "Tristin Shestag", "Dr. Patrick Kastner")
+    assert about.authors_line() == "Dr. Benson Ku, Tristin Shestag, and Dr. Patrick Kastner"
 
 
 def test_authors_line_handles_one_and_three_names(monkeypatch):
@@ -95,7 +95,7 @@ def test_coordinator_writes_run_info(tmp_path):
     info = dict(r for r in rows[1:])
     assert info["tool"] == about.TOOL_NAME
     assert info["tool_version"] == about.VERSION
-    assert info["authors"] == "Dr. Benson Ku; Dr. Patrick Kastner"
+    assert info["authors"] == "Dr. Benson Ku; Tristin Shestag; Dr. Patrick Kastner"
     assert info["repository"] == about.REPO_URL
     assert info["generated_at_utc"].endswith("Z")
     # Settings the run actually used, not defaults.
@@ -142,11 +142,9 @@ def test_webapp_mirror_matches_python(ts_name, py_value):
 
 def test_author_urls_key_only_real_authors():
     # A typo in AUTHOR_URLS would silently credit-by-name-only rather than
-    # error, so pin that every key is a real author, and that AUTHOR_URLS
-    # covers every current author (both PIs are linked; the "an author with
-    # no entry stays plain text" fallback in the webapp is exercised by
-    # test_authors_line_handles_one_and_three_names's fictional names).
-    assert set(about.AUTHOR_URLS) == set(about.AUTHORS)
+    # error, so pin that every key is a real author. An author with no entry
+    # is shown as plain text.
+    assert set(about.AUTHOR_URLS) <= set(about.AUTHORS)
     assert all(url.startswith("https://") for url in about.AUTHOR_URLS.values())
 
 

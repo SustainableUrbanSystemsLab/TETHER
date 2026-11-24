@@ -1,8 +1,8 @@
 [package]
 name = "neighborhood-matcher"
-version = "1.0.5"
+version = "1.0.6"
 description = "Match participant-level data to neighborhood-scale records, entirely on this computer"
-authors = ["Dr. Benson Ku", "Dr. Patrick Kastner"]
+authors = ["Dr. Benson Ku", "Tristin Shestag", "Dr. Patrick Kastner"]
 license = ""
 repository = "https://github.com/SustainableUrbanSystemsLab/TETHER"
 edition = "2024"

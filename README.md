@@ -24,7 +24,7 @@
   <a href="https://app.netlify.com/projects/nbhdmatch/deploys"><img src="https://api.netlify.com/api/v1/badges/f2fe942a-24a9-41d3-9ed6-29dac67da9b3/deploy-status" alt="Netlify Status" /></a>
 </p>
 
-Developed by **[Dr. Benson Ku](https://med.emory.edu/directory/profile/?u=BSKU)**
+Developed by **[Dr. Benson Ku](https://med.emory.edu/directory/profile/?u=BSKU)**, **Tristin Shestag**,
 and **[Dr. Patrick Kastner](https://sustainableurbansystems.com/)**. Given a **target** CSV (e.g. study participants) and a
 **supplemental** CSV (e.g. census tracts), the matcher links every target row to its closest supplemental row by
 standardized Euclidean distance and reports how trustworthy each link is:
