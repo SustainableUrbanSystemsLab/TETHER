@@ -136,7 +136,7 @@ export function DataPreviewModal({
             </thead>
             <tbody>
               {pageRows.map(({ row, csvRow }) => (
-                <tr key={csvRow} className="odd:bg-white even:bg-gray-50/60">
+                <tr key={csvRow} className="odd:bg-surface even:bg-gray-50/60">
                   <td className="border-r border-gray-100 px-2 py-1 text-gray-400">
                     {csvRow}
                   </td>

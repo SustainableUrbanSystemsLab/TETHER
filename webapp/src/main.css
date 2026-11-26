@@ -35,6 +35,11 @@
    target) keep their meaning and only shift lightness where contrast needs it.
 --------------------------------------------------------------------------- */
 :root {
+  /* Without this, the <meta name="color-scheme" content="light dark"> lets a
+     dark OS paint default text and native controls dark-style (white on
+     white) while the app is set to Light. The dark block below overrides it. */
+  color-scheme: light;
+
   --chart-grid: #f6f8fa;        /* histogram gridlines — bgColor-muted */
   --chart-rule: #d1d9e0;        /* axis rules, inert cells — borderColor-default */
   --chart-label: #64748b;       /* tick and axis labels */
@@ -209,4 +214,5 @@
    theme instead of flashing the browser default. */
 html {
   background-color: var(--color-canvas);
+  color: var(--color-gray-900); /* default text, not the browser's */
 }

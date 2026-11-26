@@ -6,6 +6,13 @@ All notable changes to TETHER. The format follows
 version (`python scripts/bump_version.py patch|minor|major`), and CI refuses a
 pull request that changes shipped code without one.
 
+## [1.0.8] - 2026-11-25
+
+### Fixed
+
+- With the theme set to Light on a system in dark mode, dropdowns showed white text on white (for example the minimum-confidence control) and native controls drew dark.
+- In dark mode, every other row of the data preview had a white background behind light text.
+
 ## [1.0.7] - 2026-11-24
 
 ### Fixed
